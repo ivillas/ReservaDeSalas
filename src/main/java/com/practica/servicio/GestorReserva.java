@@ -1,6 +1,8 @@
-package com.practica.modelo;
+package com.practica.servicio;
 
 import java.util.List;
+
+import com.practica.modelo.Reserva;
 
 public class GestorReserva {
     public void altaReserva(Reserva reserva) {

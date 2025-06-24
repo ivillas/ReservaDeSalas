@@ -166,8 +166,8 @@ public class Empleado {
 	
 	@Override
 	public String toString() {
-		return "Empleado [dni=" + dni + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
-				+ ", departamento=" + departamento + "]";
+		return "dni=" + dni + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
+				+ ", departamento=" + departamento + ".\n";
 	}
 
 

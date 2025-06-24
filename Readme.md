@@ -11,7 +11,7 @@ src ├── main │ └── java │ └── com │ └── practica �
 
 ## Funcionalidades
 
-- **Clase `Empleado`**:
+- **Clases `Empleado` `Sala` y `Reserva`**:
   - Constructor vacío y con parámetros.
   - Métodos `getters` y `setters`.
   - Métodos sobrescritos: `equals`, `hashCode`, y `toString`.
@@ -29,7 +29,7 @@ src ├── main │ └── java │ └── com │ └── practica �
 
 ## Autor
 
-Proyecto desarrollado por [Tu Nombre o Usuario de GitHub].
+Proyecto desarrollado por [Ivan Villa].
 
 ## Licencia
 
