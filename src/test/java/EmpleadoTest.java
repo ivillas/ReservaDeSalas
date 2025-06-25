@@ -63,7 +63,7 @@ public class EmpleadoTest {
     @Test
     void testToString() {
         Empleado empleado = new Empleado("33333333E", "Sara", "López", "sara@email.com", "Finanzas");
-        String esperado = "Empleado [dni=33333333E, nombre=Sara, apellidos=López, email=sara@email.com, departamento=Finanzas]";
+        String esperado = "dni=33333333E, nombre=Sara, apellidos=López, email=sara@email.com, departamento=Finanzas.\n";
         assertEquals(esperado, empleado.toString());
     }
 }

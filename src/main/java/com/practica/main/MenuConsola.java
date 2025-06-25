@@ -2,6 +2,7 @@ package com.practica.main;
 
 import com.practica.modelo.ControladorModelo;
 import com.practica.modelo.Empleado;
+import com.practica.servicio.GestorEmpleado;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -103,7 +104,7 @@ public class MenuConsola {
     Empleado empleado = new Empleado(dni, nombre, apellidos, email, departamento);
 
     // Agregar el empleado al modelo
-    ControladorModelo.altaEmpleado(empleado);
+    GestorEmpleado.altaEmpleado(empleado);
     System.out.println("Empleado agregado exitosamente.");
 }
 
@@ -115,7 +116,7 @@ public class MenuConsola {
 
 	    // Verificar si el empleado existe en la lista
 	    boolean empleadoEncontrado = false;
-	    for (Empleado empleado : ControladorModelo.listaEmpleados()) {
+	    for (Empleado empleado : GestorEmpleado.listaEmpleados()) {
 	        if (empleado.getDni().equals(dni)) {
 	            empleadoEncontrado = true;
 	            break;
@@ -125,9 +126,8 @@ public class MenuConsola {
 	    if (empleadoEncontrado) {
 	        try {
 	            // Eliminar el empleado enviando el DNI
-	            ControladorModelo.bajaEmpleado(dni);
-	            System.out.println("Empleado eliminado exitosamente.");
-	        } catch (SQLException e) {
+	        	GestorEmpleado.bajaEmpleado(dni);
+        } catch (SQLException e) {
 	            System.err.println("Error al eliminar el empleado: " + e.getMessage());
 	        }
 	    } else {
@@ -141,7 +141,7 @@ public class MenuConsola {
 
 	    // Buscar el empleado por DNI
 	    Empleado empleadoAModificar = null;
-	    for (Empleado empleado : ControladorModelo.listaEmpleados()) {
+	    for (Empleado empleado : GestorEmpleado.listaEmpleados()) {
 	        if (empleado.getDni().equals(dni)) {
 	            empleadoAModificar = empleado;
 	            break;
@@ -177,7 +177,7 @@ public class MenuConsola {
 
 	        try {
 	            // Llamar al método que sincroniza con la base de datos
-	            ControladorModelo.modificarEmpleado(ControladorModelo.listaEmpleados().indexOf(empleadoAModificar), empleadoAModificar);
+	        	GestorEmpleado.modificarEmpleado(GestorEmpleado.listaEmpleados().indexOf(empleadoAModificar), empleadoAModificar);
 	            System.out.println("Empleado modificado exitosamente.");
 	        } catch (SQLException e) {
 	            System.err.println("Error al modificar el empleado en la base de datos: " + e.getMessage());
