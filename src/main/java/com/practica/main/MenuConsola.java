@@ -27,6 +27,12 @@ public class MenuConsola {
 		int opcion;
 
 		do {
+	        System.out.println();
+	        System.out.println();
+	        System.out.println("***********************************************");
+	        System.out.println("******    Gestor de Reserva De Salas     ******");
+	        System.out.println("***********************************************");
+	        System.out.println();
 			System.out.println("\n           --- Menú Principal ---\n");
 			System.out.println("******    1. Alta de empleado            ******");
 			System.out.println("******    2. Baja de empleado            ******");
@@ -236,7 +242,7 @@ public class MenuConsola {
 
 	    System.out.print("¿Está disponible? (sí/no): ");
 	    String disponibleInput = scanner.nextLine().trim().toLowerCase();
-	    boolean disponible = disponibleInput.equals("sí" ) || disponibleInput.equals("si");
+	    boolean disponible = disponibleInput.equals("sí" ) || disponibleInput.equals("si") || disponibleInput.equals("s");
 
 	    System.out.print("Recursos disponibles (separados por comas): ");
 	    String recursosInput = scanner.nextLine();
@@ -313,7 +319,7 @@ public class MenuConsola {
 	            System.out.print("¿Está disponible? (sí/no) (" + (salaAModificar.isDisponible() ? "sí" : "no") + "): ");
 	            String nuevaDisponibilidad = scanner.nextLine().trim().toLowerCase();
 	            if (!nuevaDisponibilidad.isBlank()) {
-	                salaAModificar.setDisponible(nuevaDisponibilidad.equals("sí") || nuevaDisponibilidad.equals("si"));
+	                salaAModificar.setDisponible(nuevaDisponibilidad.equals("sí") || nuevaDisponibilidad.equals("si") || nuevaDisponibilidad.equals("s"));
 	            }
 
 	            System.out.print("Recursos disponibles (" + String.join(", ", salaAModificar.getRecursosDisponibles()) + "): ");
@@ -400,7 +406,7 @@ public class MenuConsola {
 	        System.out.print("\n¿Desea realizar una reserva? (sí/no): ");
 	        String opcion = scanner.nextLine().trim().toLowerCase();
 
-			if (opcion.equals("sí") || opcion.equals("si")) {
+			if (opcion.equals("sí") || opcion.equals("si") || opcion.equals("s")) {
 				System.out.println("Procediendo a realizar una reserva...");
 				// Aquí se llamaa al método para realizar la reserva
 	        	altaReserva(scanner);
