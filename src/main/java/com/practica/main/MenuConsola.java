@@ -69,7 +69,7 @@ public class MenuConsola {
 				altaReserva(scanner);
 				break;
 			case 8:
-				bajaReserva(scanner);
+				cancelacionReserva(scanner);
 				break;
 			case 9:
 				modificarReserva(scanner);
@@ -78,7 +78,7 @@ public class MenuConsola {
 				listarEmpleados();
 				break;
 			case 11:
-				listarSalas();
+				listarSalas(scanner);
 				break;
 			case 12:
 				listarReservas();
@@ -349,7 +349,7 @@ public class MenuConsola {
 	 * @param scanner Objeto Scanner para leer la entrada del usuario.
 	 */
 
-	private void bajaReserva(Scanner scanner) {
+	private void cancelacionReserva(Scanner scanner) {
 		System.out.println("Baja de reserva...");
 		// Implementar lógica para baja de reserva
 	}
@@ -379,9 +379,37 @@ public class MenuConsola {
 	 * Lista las salas de reuniones registradas en el sistema.
 	 */
 
-	private void listarSalas() {
-		System.out.println("Listado de salas...");
-		// Implementar lógica para listar salas
+	private void listarSalas(Scanner scanner) {
+	    try {
+	        GestorSalaReuniones gestor = new GestorSalaReuniones();
+	        List<SalaReuniones> salas = gestor.listarSalas();
+
+	        if (salas.isEmpty()) {
+	            System.out.println("No hay salas registradas.");
+	            return;
+	        }
+
+	        System.out.println("\nListado de salas:");
+	        for (SalaReuniones sala : salas) {
+	            System.out.println("ID: " + sala.getId() +
+	                               ", Nombre: " + sala.getNombre() +
+	                               ", Capacidad: " + sala.getCapacidad() +
+	                               ", Disponible: " + (sala.isDisponible() ? "Sí" : "No"));
+	        }
+
+	        System.out.print("\n¿Desea realizar una reserva? (sí/no): ");
+	        String opcion = scanner.nextLine().trim().toLowerCase();
+
+			if (opcion.equals("sí") || opcion.equals("si")) {
+				System.out.println("Procediendo a realizar una reserva...");
+				// Aquí se llamaa al método para realizar la reserva
+	        	altaReserva(scanner);
+	        } else {
+	            System.out.println("Regresando al menú principal...");
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Error al listar las salas: " + e.getMessage());
+	    }
 	}
 	
 	/**
