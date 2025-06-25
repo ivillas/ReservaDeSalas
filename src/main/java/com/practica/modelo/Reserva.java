@@ -10,8 +10,8 @@ import java.time.LocalTime;
 
 public class Reserva {
 	private String idReserva;
-    private Empleado empleado;
-    private SalaReuniones sala;
+    private String dniEmpleado;
+    private int idSala;
     private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
@@ -34,51 +34,84 @@ public class Reserva {
 		this.idReserva = idReserva;
 	}
     
+        /**
+         * Constructor con todos los campos necesarios para una reserva.		
+         * @param idReserva
+         * @param dniEmpleado
+         * @param idSala
+         * @param fecha
+         * @param horaInicio
+         * @param horaFin
+         */
     
-    /**
-     * constructor con todos los campos
-     * @param idReserva
-     * @param empleado
-     * @param sala
-     * @param fecha
-     * @param horaInicio
-     * @param horaFin
-     */
-
-    public Reserva(String idReserva, Empleado empleado, SalaReuniones sala, LocalDate fecha, LocalTime horaInicio,
+    
+    public Reserva(String idReserva, String dniEmpleado, int idSala, LocalDate fecha, LocalTime horaInicio,
 			LocalTime horaFin) {
 		super();
 		this.idReserva = idReserva;
-		this.empleado = empleado;
-		this.sala = sala;
+		this.dniEmpleado = dniEmpleado;
+		this.idSala = idSala;
 		this.fecha = fecha;
 		this.horaInicio = horaInicio;
 		this.horaFin = horaFin;
 	}
 
 	/**
-	 * Métodos getter y setter para los atributos de la clase Reserva.
+	 * Constructor con DNI de empleado, ID de sala, fecha, hora de inicio y hora de
+	 * fin.
+	 * 
+	 * @param dniEmpleado DNI del empleado que realiza la reserva.
+	 * @param idSala      ID de la sala reservada.
+	 * @param fecha       Fecha de la reserva.
+	 * @param horaInicio  Hora de inicio de la reserva.
+	 * @param horaFin     Hora de fin de la reserva.
 	 */
     
-    public Empleado getEmpleado() {
-        return empleado;
-    }
+	public Reserva(String dniEmpleado, int idSala, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
+		super();
+		this.dniEmpleado = dniEmpleado;
+		this.idSala = idSala;
+		this.fecha = fecha;
+		this.horaInicio = horaInicio;
+		this.horaFin = horaFin;
+	}
 
 
 
-	public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
-    }
+	/**
+	 * Métodos getter y setter para los atributos de la clase Reserva.
+	 */
+    	
+	
+	public String getIdReserva() {
+		return idReserva;
+	}
 
-    public SalaReuniones getSala() {
-        return sala;
-    }
 
-    public void setSala(SalaReuniones sala) {
-        this.sala = sala;
-    }
 
-    public LocalDate getFecha() {
+	public void setIdReserva(String idReserva) {
+		this.idReserva = idReserva;
+	}
+
+	
+	
+    public String getDniEmpleado() {
+		return dniEmpleado;
+	}
+
+	public void setDniEmpleado(String dniEmpleado) {
+		this.dniEmpleado = dniEmpleado;
+	}
+
+	public int getIdSala() {
+		return idSala;
+	}
+
+	public void setIdSala(int idSala) {
+		this.idSala = idSala;
+	}
+
+	public LocalDate getFecha() {
         return fecha;
     }
 
@@ -131,6 +164,13 @@ public class Reserva {
 			return false;
 		return true;
 	}
+
+	@Override
+	
+	public String toString() {
+		return "Reserva [idReserva=" + idReserva + ", dniEmpleado=" + dniEmpleado + ", idSala=" + idSala + ", fecha="
+				+ fecha + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + "]";
+	}
     
     /**
 	 * Método toString para representar la reserva como una cadena de texto.
@@ -138,8 +178,5 @@ public class Reserva {
 	 * @return Cadena que representa la reserva.
 	 */
 	
-	@Override
-    public String toString() {
-        return "Reserva [empleado=" + empleado + ", sala=" + sala + ", fecha=" + fecha + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + "]";
-    }
+
 }

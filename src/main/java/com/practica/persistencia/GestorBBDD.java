@@ -219,6 +219,45 @@ public class GestorBBDD {
         return salas;
     }
     
+    // Métodos para Reserva
+    
+	/**
+	 * Agrega una nueva reserva a la base de datos.
+	 *
+	 * @param reserva El objeto `Reserva` que contiene los datos de la reserva a
+	 *                agregar.
+	 * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+	 */	
+    
 
+
+public static int altaReserva(Reserva reserva) throws SQLException {
+    String sql = "INSERT INTO reserva (idSala, dniEmpleado, fecha, horaInicio, horaFin) VALUES (?, ?, ?, ?, ?)";
+    try (Connection conn = ConfiguracionBBDD.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+        stmt.setInt(1, reserva.getIdSala()); // ID de la sala
+        stmt.setString(2, reserva.getDniEmpleado()); // DNI del empleado
+        stmt.setDate(3, java.sql.Date.valueOf(reserva.getFecha())); // Fecha
+        stmt.setTime(4, java.sql.Time.valueOf(reserva.getHoraInicio())); // Hora de inicio
+        stmt.setTime(5, java.sql.Time.valueOf(reserva.getHoraFin())); // Hora de fin
+
+        stmt.executeUpdate();
+
+        // Recuperar el ID generado automáticamente
+        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1); // Retorna el ID generado
+            } else {
+                throw new SQLException("No se pudo obtener el ID generado para la reserva.");
+            }
+        }
+    }
+}
+
+
+    
+    
+    
    
 }

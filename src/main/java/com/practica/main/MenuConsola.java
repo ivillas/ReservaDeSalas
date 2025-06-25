@@ -2,11 +2,15 @@ package com.practica.main;
 
 import com.practica.modelo.ControladorModelo;
 import com.practica.modelo.Empleado;
+import com.practica.modelo.Reserva;
 import com.practica.modelo.SalaReuniones;
 import com.practica.servicio.GestorEmpleado;
+import com.practica.servicio.GestorReserva;
 import com.practica.servicio.GestorSalaReuniones;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -344,10 +348,41 @@ public class MenuConsola {
 	 * @param scanner Objeto Scanner para leer la entrada del usuario.
 	 */
 
-	private void altaReserva(Scanner scanner) {
-		System.out.println("Alta de reserva...");
-		// Implementar lógica para alta de reserva
-	}
+
+
+
+private void altaReserva(Scanner scanner) {
+    System.out.println("Ingrese los datos de la reserva:");
+
+    System.out.print("DNI del empleado: ");
+    String dniEmpleado = scanner.nextLine();
+    
+    System.out.print("ID de la sala: ");
+    int idSala = scanner.nextInt();
+
+    scanner.nextLine(); // Limpiar el buffer
+
+    System.out.print("Fecha (YYYY-MM-DD): ");
+    String fecha = scanner.nextLine();
+
+    System.out.print("Hora de inicio (HH:MM): ");
+    String horaInicio = scanner.nextLine();
+
+    System.out.print("Hora de fin (HH:MM): ");
+    String horaFin = scanner.nextLine();
+
+    Reserva reserva = new Reserva(dniEmpleado, idSala, LocalDate.parse(fecha), LocalTime.parse(horaInicio), LocalTime.parse(horaFin));
+
+    try {
+        GestorReserva gestor = new GestorReserva();
+        int idGenerado = gestor.altaReserva(reserva); // Obtiene el ID generado
+        System.out.println("Reserva registrada exitosamente con ID: " + idGenerado);
+    } catch (Exception e) {
+        System.err.println("Error al registrar la reserva: " + e.getMessage());
+    }
+}
+
+
 	
 	/**
 	 * Elimina una reserva del sistema.
