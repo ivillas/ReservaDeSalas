@@ -213,9 +213,16 @@ public class GestorReserva {
 		return GestorBBDD.obtenerReservaPorId(idReserva); // Llama al método de la capa de persistencia
 	}
 
-	public List<Reserva> listarReservas() {
 
-		return null; // Implementación pendiente
+	/**
+	 * Obtiene una lista de todas las reservas registradas en el sistema.
+	 *
+	 * @return Una lista de objetos `Reserva` que representan las reservas
+	 *         registradas.
+	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+	 */
+	public List<Reserva> listarReservas() throws SQLException {
+		return GestorBBDD.listarReservas();
 	}
 
 }

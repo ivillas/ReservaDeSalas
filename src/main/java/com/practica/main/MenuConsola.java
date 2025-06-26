@@ -747,24 +747,32 @@ public class MenuConsola {
 		}
 	}
 
-	/**
-	 * Lista las reservas registradas en el sistema.
-	 */
-
-	private void listarReservas() {
-		System.out.println("Listado de reservas...");
-		// Implementar lógica para listar reservas
-	}
 
 	/**
-	 * Método principal para iniciar la aplicación.
+	 * Lista todas las reservas registradas en el sistema.
 	 *
-	 * @param args Argumentos de línea de comandos (no utilizados).
-	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+	 * Este método obtiene las reservas desde el gestor y las muestra en la consola.
+	 * Si no hay reservas registradas, informa al usuario.
 	 */
+	private void listarReservas() {
+		try {
+			GestorReserva gestor = new GestorReserva();
+			List<Reserva> reservas = gestor.listarReservas();
 
-	public static void main(String[] args) throws SQLException {
-		MenuConsola menu = new MenuConsola();
-		menu.mostrarMenu();
+			if (reservas.isEmpty()) {
+				System.out.println("No hay reservas registradas.");
+				return;
+			}
+
+			System.out.println("\nListado de reservas:");
+			for (Reserva reserva : reservas) {
+				System.out.println("ID: " + reserva.getIdReserva() + ", DNI Empleado: " + reserva.getDniEmpleado()
+						+ ", ID Sala: " + reserva.getIdSala() + ", Fecha: " + reserva.getFecha() + ", Hora Inicio: "
+						+ reserva.getHoraInicio() + ", Hora Fin: " + reserva.getHoraFin());
+			}
+		} catch (Exception e) {
+			System.err.println("Error al listar las reservas: " + e.getMessage());
+		}
 	}
+
 }

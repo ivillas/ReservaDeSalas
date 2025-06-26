@@ -310,5 +310,28 @@ public class GestorBBDD {
 		return null; // Retorna null si no se encuentra la reserva
 	}
     
+
+	/**
+	 * Obtiene una lista de todas las reservas registradas en la base de datos.
+	 *
+	 * @return Una lista de objetos `Reserva` que representan las reservas
+	 *         registradas.
+	 * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+	 */
+	public static List<Reserva> listarReservas() throws SQLException {
+		List<Reserva> reservas = new ArrayList<>();
+		String sql = "SELECT * FROM reserva";
+		try (Connection conn = ConfiguracionBBDD.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			while (rs.next()) {
+				Reserva reserva = new Reserva(rs.getString("idReserva"), rs.getString("dniEmpleado"),
+						rs.getInt("idSala"), rs.getDate("fecha").toLocalDate(), rs.getTime("horaInicio").toLocalTime(),
+						rs.getTime("horaFin").toLocalTime());
+				reservas.add(reserva);
+			}
+		}
+		return reservas;
+	}
    
 }
