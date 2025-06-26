@@ -1,7 +1,6 @@
 package com.practica.main;
 
-import com.practica.modelo.ControladorModelo;
-import com.practica.modelo.Empleado;
+
 import com.practica.modelo.Reserva;
 import com.practica.modelo.SalaReuniones;
 import com.practica.servicio.GestorEmpleado;
@@ -58,13 +57,13 @@ public class MenuConsola {
 
 			switch (opcion) {
 			case 1:
-				altaEmpleado(scanner);
+				GestorEmpleado.altaEmpleado(scanner);
 				break;
 			case 2:
-				bajaEmpleado(scanner);
+				GestorEmpleado.bajaEmpleado(scanner);
 				break;
 			case 3:
-				modificarEmpleado(scanner);
+				GestorEmpleado.modificarEmpleado(scanner);
 				break;
 			case 4:
 				altaSala(scanner);
@@ -85,7 +84,7 @@ public class MenuConsola {
 				modificarReserva(scanner);
 				break;
 			case 10:
-				listarEmpleados();
+				GestorEmpleado.mostrarEmpleados();
 				break;
 			case 11:
 				listarSalas(scanner);
@@ -104,136 +103,6 @@ public class MenuConsola {
 		scanner.close();
 	}
 
-	/**
-	 * Registra un nuevo empleado en el sistema.
-	 *
-	 * @param scanner Objeto Scanner para leer la entrada del usuario.
-	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
-	 */
-
-	private void altaEmpleado(Scanner scanner) throws SQLException {
-
-		System.out.println("Ingrese los datos del empleado:");
-
-		System.out.print("DNI: ");
-		String dni = scanner.nextLine();
-
-		System.out.print("Nombre: ");
-		String nombre = scanner.nextLine();
-
-		System.out.print("Apellidos: ");
-		String apellidos = scanner.nextLine();
-
-		System.out.print("Email: ");
-		String email = scanner.nextLine();
-
-		System.out.print("Departamento: ");
-		String departamento = scanner.nextLine();
-
-		// Crear el objeto Empleado
-		Empleado empleado = new Empleado(dni, nombre, apellidos, email, departamento);
-
-		// Agregar el empleado al modelo
-		GestorEmpleado.altaEmpleado(empleado);
-		System.out.println("Empleado agregado exitosamente.");
-	}
-
-	/**
-	 * Elimina un empleado del sistema.
-	 *
-	 * @param scanner Objeto Scanner para leer la entrada del usuario.
-	 */
-
-	private void bajaEmpleado(Scanner scanner) {
-		System.out.println("Ingrese el DNI del empleado a eliminar:");
-		String dni = scanner.nextLine();
-
-		// Verificar si el empleado existe en la lista
-		boolean empleadoEncontrado = false;
-		for (Empleado empleado : GestorEmpleado.listaEmpleados()) {
-			if (empleado.getDni().equals(dni)) {
-				empleadoEncontrado = true;
-				break;
-			}
-		}
-
-		if (empleadoEncontrado) {
-			try {
-				// Eliminar el empleado enviando el DNI
-				GestorEmpleado.bajaEmpleado(dni);
-			} catch (SQLException e) {
-				System.err.println("Error al eliminar el empleado: " + e.getMessage());
-			}
-		} else {
-			System.out.println("No se encontró un empleado con el DNI proporcionado.");
-		}
-	}
-
-	/**
-	 * Modifica los datos de un empleado existente.
-	 *
-	 * @param scanner Objeto Scanner para leer la entrada del usuario.
-	 */
-
-	private void modificarEmpleado(Scanner scanner) {
-		System.out.println("Ingrese el DNI del empleado a modificar:");
-		String dni = scanner.nextLine();
-
-		// Buscar el empleado por DNI
-		Empleado empleadoAModificar = null;
-		for (Empleado empleado : GestorEmpleado.listaEmpleados()) {
-			if (empleado.getDni().equals(dni)) {
-				empleadoAModificar = empleado;
-				break;
-			}
-		}
-
-		if (empleadoAModificar != null) {
-			System.out.println(
-					"Empleado encontrado. Ingrese los nuevos datos (deje en blanco para mantener el valor actual):");
-
-			System.out.print("Nombre (" + empleadoAModificar.getNombre() + "): ");
-			String nuevoNombre = scanner.nextLine();
-			if (!nuevoNombre.isBlank()) {
-				empleadoAModificar.setNombre(nuevoNombre);
-			}
-
-			System.out.print("Apellidos (" + empleadoAModificar.getApellidos() + "): ");
-			String nuevosApellidos = scanner.nextLine();
-			if (!nuevosApellidos.isBlank()) {
-				empleadoAModificar.setApellidos(nuevosApellidos);
-			}
-
-			System.out.print("Email (" + empleadoAModificar.getEmail() + "): ");
-			String nuevoEmail = scanner.nextLine();
-			if (!nuevoEmail.isBlank()) {
-				empleadoAModificar.setEmail(nuevoEmail);
-			}
-
-			System.out.print("Departamento (" + empleadoAModificar.getDepartamento() + "): ");
-			String nuevoDepartamento = scanner.nextLine();
-			if (!nuevoDepartamento.isBlank()) {
-				empleadoAModificar.setDepartamento(nuevoDepartamento);
-			}
-
-			try {
-				// Llamar al método que sincroniza con la base de datos
-				GestorEmpleado.modificarEmpleado(GestorEmpleado.listaEmpleados().indexOf(empleadoAModificar),
-						empleadoAModificar);
-				System.out.println("Empleado modificado exitosamente.");
-			} catch (SQLException e) {
-				System.err.println("Error al modificar el empleado en la base de datos: " + e.getMessage());
-			}
-		} else {
-			System.out.println("No se encontró un empleado con el DNI proporcionado.");
-		}
-	}
-
-	/**
-	 * Registra una nueva sala de reuniones en el sistema.
-	 *
-	 * @param scanner Objeto Scanner para leer la entrada del usuario.
-	 */
 
 	private void altaSala(Scanner scanner) {
 		System.out.println("Ingrese los datos de la sala:");
@@ -700,16 +569,6 @@ public class MenuConsola {
 		} catch (Exception e) {
 			System.err.println("Error al modificar la reserva: " + e.getMessage());
 		}
-	}
-
-	/**
-	 * Lista los empleados registrados en el sistema.
-	 */
-
-	private void listarEmpleados() {
-		System.out.println("Listado de empleados:\n");
-		ControladorModelo.mostrarEmpleados();
-		// Implementar lógica para listar empleados
 	}
 
 	/**

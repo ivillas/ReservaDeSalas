@@ -167,16 +167,16 @@ public class Reserva {
 
 	@Override
 	
-	public String toString() {
-		return "Reserva [idReserva=" + idReserva + ", dniEmpleado=" + dniEmpleado + ", idSala=" + idSala + ", fecha="
-				+ fecha + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + "]";
-	}
+
     
     /**
 	 * Método toString para representar la reserva como una cadena de texto.
 	 * 
 	 * @return Cadena que representa la reserva.
 	 */
-	
+	public String toString() {
+		return "Reserva [idReserva=" + idReserva + ", dniEmpleado=" + dniEmpleado + ", idSala=" + idSala + ", fecha="
+				+ fecha + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + "]";
+	}
 
 }
