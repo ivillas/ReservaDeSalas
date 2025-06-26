@@ -81,62 +81,73 @@ public class GestorEmpleado {
 	 * @param scanner Objeto Scanner para leer la entrada del usuario.
 	 */
 
-	public static void bajaEmpleado(Scanner scanner) {
-	    System.out.println("Ingrese el DNI del empleado a eliminar:");
-	    String dni = scanner.nextLine();
 
-	    // Verificar si el empleado existe en la lista
-	    boolean empleadoEncontrado = false;
-	    for (Empleado empleado : GestorEmpleado.listaEmpleados()) {
-	        if (empleado.getDni().equals(dni)) {
-	            empleadoEncontrado = true;
-	            break;
-	        }
-	    }
+public static void bajaEmpleado(Scanner scanner) {
+    System.out.println("Ingrese el DNI del empleado a eliminar:");
 
-	    if (empleadoEncontrado) {
-	        try {
-	            // Verificar si el empleado tiene reservas futuras
-	            GestorReserva gestorReserva = new GestorReserva();
-	            List<Reserva> reservasFuturas = new ArrayList<>();
-	            for (Reserva reserva : gestorReserva.listarReservas()) {
-	                if (reserva.getDniEmpleado().equals(dni) && reserva.getFecha().isAfter(LocalDate.now())) {
-	                    reservasFuturas.add(reserva);
-	                }
-	            }
+    // Validar el formato del DNI
+    String dni;
+    while (true) {
+        dni = scanner.nextLine();
+        if (dni.matches("\\d{8}[A-Z]")) { // 8 dígitos seguidos de una letra mayúscula
+            break;
+        } else {
+            System.out.println("Formato de DNI incorrecto. Inténtelo de nuevo (formato: 46254789Y):");
+        }
+    }
 
-	            if (!reservasFuturas.isEmpty()) {
-	                System.out.println("El empleado tiene las siguientes reservas futuras:");
-	                for (Reserva reserva : reservasFuturas) {
-	                    System.out.println("ID Reserva: " + reserva.getIdReserva() + ", Fecha: " + reserva.getFecha() +
-	                            ", Hora Inicio: " + reserva.getHoraInicio() + ", Hora Fin: " + reserva.getHoraFin());
-	                }
+    // Verificar si el empleado existe en la lista
+    boolean empleadoEncontrado = false;
+    for (Empleado empleado : GestorEmpleado.listaEmpleados()) {
+        if (empleado.getDni().equals(dni)) {
+            empleadoEncontrado = true;
+            break;
+        }
+    }
 
-	                System.out.print("¿Desea eliminar estas reservas y continuar con la baja del empleado? (sí/no): ");
-	                String opcion = scanner.nextLine().trim().toLowerCase();
+    if (empleadoEncontrado) {
+        try {
+            // Verificar si el empleado tiene reservas futuras
+            GestorReserva gestorReserva = new GestorReserva();
+            List<Reserva> reservasFuturas = new ArrayList<>();
+            for (Reserva reserva : gestorReserva.listaReservas()) {
+                if (reserva.getDniEmpleado().equals(dni) && reserva.getFecha().isAfter(LocalDate.now())) {
+                    reservasFuturas.add(reserva);
+                }
+            }
 
-	                if (opcion.equals("sí") || opcion.equals("si") || opcion.equals("s")) {
-	                    // Eliminar las reservas futuras
-	                    for (Reserva reserva : reservasFuturas) {
-	                        gestorReserva.bajaReserva(Integer.parseInt(reserva.getIdReserva()));
-	                    }
-	                    System.out.println("Reservas eliminadas exitosamente.");
-	                } else {
-	                    System.out.println("Operación cancelada.");
-	                    return;
-	                }
-	            }
+            if (!reservasFuturas.isEmpty()) {
+                System.out.println("El empleado tiene las siguientes reservas futuras:");
+                for (Reserva reserva : reservasFuturas) {
+                    System.out.println("ID Reserva: " + reserva.getIdReserva() + ", Fecha: " + reserva.getFecha() +
+                            ", Hora Inicio: " + reserva.getHoraInicio() + ", Hora Fin: " + reserva.getHoraFin());
+                }
 
-	            // Eliminar el empleado
-	            GestorBBDD.eliminarEmpleado(dni);
-	            System.out.println("Empleado eliminado exitosamente.");
-	        } catch (SQLException e) {
-	            System.err.println("Error al procesar la baja del empleado: " + e.getMessage());
-	        }
-	    } else {
-	        System.out.println("No se encontró un empleado con el DNI proporcionado.");
-	    }
-	}
+                System.out.print("¿Desea eliminar estas reservas y continuar con la baja del empleado? (sí/no): ");
+                String opcion = scanner.nextLine().trim().toLowerCase();
+
+                if (opcion.equals("sí") || opcion.equals("si") || opcion.equals("s")) {
+                    // Eliminar las reservas futuras
+                    for (Reserva reserva : reservasFuturas) {
+                        GestorReserva.bajaReserva(Integer.parseInt(reserva.getIdReserva()));
+                    }
+                    System.out.println("Reservas eliminadas exitosamente.");
+                } else {
+                    System.out.println("Operación cancelada.");
+                    return;
+                }
+            }
+
+            // Eliminar el empleado
+            GestorBBDD.eliminarEmpleado(dni);
+       } catch (SQLException e) {
+            System.err.println("Error al procesar la baja del empleado: " + e.getMessage());
+        }
+    } else {
+        System.out.println("No se encontró un empleado con el DNI proporcionado.");
+    }
+}
+
 
 	
 	/**
