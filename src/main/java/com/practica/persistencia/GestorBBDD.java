@@ -255,8 +255,29 @@ public static int altaReserva(Reserva reserva) throws SQLException {
     }
 }
 
+/**
+ * Elimina una reserva de la base de datos.
+ *
+ * Este método ejecuta una consulta SQL para eliminar una reserva
+ * identificada por su ID. Devuelve un valor booleano que indica
+ * si la operación fue exitosa.
+ *
+ * @param idReserva El ID de la reserva que se desea eliminar.
+ * @return `true` si se eliminó una fila (reserva encontrada y eliminada),
+ *         `false` si no se encontró una reserva con el ID especificado.
+ * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+ */
 
-    
+public static boolean bajaReserva(int idReserva) throws SQLException {
+    String sql = "DELETE FROM reserva WHERE idReserva = ?";
+    try (Connection conn = ConfiguracionBBDD.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, idReserva);
+        int filasEliminadas = stmt.executeUpdate();
+        return filasEliminadas > 0; // Devuelve true si se eliminó una fila
+    }
+}
+
     
     
    

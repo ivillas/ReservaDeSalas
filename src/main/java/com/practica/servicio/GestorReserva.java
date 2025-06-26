@@ -161,12 +161,22 @@ public static boolean verificarDisponibilidadSala(int idSala, LocalDate fecha, L
     }
     return false; // Devuelve false si hay conflictos
 }
+/**
+ * Cancela una reserva en la base de datos.
+ *
+ * Este método delega la operación de cancelación a la clase `GestorBBDD`,
+ * que interactúa directamente con la base de datos. Devuelve un valor
+ * booleano que indica si la operación fue exitosa.
+ *
+ * @param idReserva El ID de la reserva que se desea cancelar.
+ * @return `true` si la reserva fue cancelada exitosamente, `false` si no se encontró.
+ * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+ */
 
+public boolean bajaReserva(int idReserva) throws SQLException {
+    return GestorBBDD.bajaReserva(idReserva); // Devuelve el resultado de la operación
+}
 
-    public void bajaReserva(int idReserva) {
-    	
-    	
-    }
     public void modificarReserva(Reserva reserva) {
     	
     	

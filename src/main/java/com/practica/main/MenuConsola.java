@@ -499,16 +499,33 @@ private void altaReserva(Scanner scanner) {
 
 
 	
-	/**
-	 * Elimina una reserva del sistema.
-	 *
-	 * @param scanner Objeto Scanner para leer la entrada del usuario.
-	 */
+/**
+ * Cancela una reserva existente en el sistema.
+ *
+ * Este método solicita al usuario el ID de la reserva que desea cancelar,
+ * verifica si la operación fue exitosa y muestra un mensaje adecuado.
+ * Si el ID no existe, informa al usuario que no se encontró la reserva.
+ *
+ * @param scanner Objeto `Scanner` para leer la entrada del usuario.
+ */
 
-	private void cancelacionReserva(Scanner scanner) {
-		System.out.println("Baja de reserva...");
-		// Implementar lógica para baja de reserva
-	}
+private void cancelacionReserva(Scanner scanner) {
+    System.out.print("Ingrese el ID de la reserva a cancelar: ");
+    int idReserva = scanner.nextInt();
+    scanner.nextLine(); // Limpiar el buffer
+
+    try {
+        GestorReserva gestor = new GestorReserva();
+        boolean exito = gestor.bajaReserva(idReserva); // Verificar si se eliminó la reserva
+        if (exito) {
+            System.out.println("Reserva cancelada exitosamente.");
+        } else {
+            System.out.println("No se encontró una reserva con el ID especificado.");
+        }
+    } catch (Exception e) {
+        System.err.println("Error al cancelar la reserva: " + e.getMessage());
+    }
+}
 	
 	/**
 	 * Modifica los datos de una reserva existente.
