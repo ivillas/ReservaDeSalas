@@ -31,12 +31,6 @@ public class GestorEmpleado {
 	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
 	 */
 
-	/**
-	 * Registra una nueva sala de reuniones en el sistema.
-	 *
-	 * @param scanner Objeto Scanner para leer la entrada del usuario.
-	 */
-
     public static void altaEmpleado(Scanner scanner) throws SQLException {
 	    System.out.println("Ingrese los datos del empleado:");
 

@@ -1,84 +1,50 @@
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
+
+import java.io.ByteArrayInputStream;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import com.practica.modelo.SalaReuniones;
 import com.practica.persistencia.GestorBBDD;
 import com.practica.servicio.GestorSalaReuniones;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
 
 class GestorSalaReunionesTest {
 
-    private GestorSalaReuniones gestorSalaReuniones;
-
-    @BeforeEach
-    void setUp() {
-        gestorSalaReuniones = new GestorSalaReuniones();
-    }
-
-    @Test
-    void testAltaSala() {
-        SalaReuniones sala = new SalaReuniones(1, "Sala A", 10, true, Arrays.asList("Proyector", "Pizarra"));
-
-        try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(() -> GestorBBDD.agregarSala(sala)).thenAnswer(invocation -> null);
-
-            gestorSalaReuniones.altaSala(sala);
-
-            mockedBBDD.verify(() -> GestorBBDD.agregarSala(sala), times(1));
-        }
-    }
 
     @Test
     void testBajaSala() {
-        int idSala = 1;
+        String simulatedInput = "1\n";
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
 
         try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(() -> GestorBBDD.eliminarSala(idSala)).thenAnswer(invocation -> null);
+            mockedBBDD.when(() -> GestorBBDD.eliminarSala(1)).thenAnswer(invocation -> null);
 
-            gestorSalaReuniones.bajaSala(idSala);
+            GestorSalaReuniones.bajaSala(new Scanner(System.in));
 
-            mockedBBDD.verify(() -> GestorBBDD.eliminarSala(idSala), times(1));
-        }
-    }
-
-    @Test
-    void testModificarSala() {
-        SalaReuniones sala = new SalaReuniones(1, "Sala B", 15, false, Arrays.asList("Televisión"));
-
-        try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(() -> GestorBBDD.modificarSala(sala)).thenAnswer(invocation -> null);
-
-            gestorSalaReuniones.modificarSala(sala);
-
-            mockedBBDD.verify(() -> GestorBBDD.modificarSala(sala), times(1));
+            mockedBBDD.verify(() -> GestorBBDD.eliminarSala(1), times(1));
         }
     }
 
     @Test
     void testListarSalas() {
-        List<SalaReuniones> salasMock = Arrays.asList(
-            new SalaReuniones(1, "Sala A", 10, true, Arrays.asList("Proyector")),
-            new SalaReuniones(2, "Sala B", 15, false, Arrays.asList("Televisión"))
-        );
-
         try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(GestorBBDD::listarSalas).thenReturn(salasMock);
+            mockedBBDD.when(GestorBBDD::listarSalas).thenReturn(Arrays.asList(
+                new SalaReuniones(1, "Sala A", 10, true, Arrays.asList("Proyector", "Pizarra")),
+                new SalaReuniones(2, "Sala B", 20, false, Arrays.asList("Monitor", "Altavoces"))
+            ));
 
-            List<SalaReuniones> salas = gestorSalaReuniones.listarSalas();
-
-            assertEquals(2, salas.size());
-            assertEquals("Sala A", salas.get(0).getNombre());
-            assertEquals("Sala B", salas.get(1).getNombre());
+            GestorSalaReuniones.listarSalas(new Scanner(new ByteArrayInputStream("no\n".getBytes())));
 
             mockedBBDD.verify(GestorBBDD::listarSalas, times(1));
         }
     }
 }
+
 

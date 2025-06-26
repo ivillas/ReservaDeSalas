@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import com.practica.modelo.Reserva;
 import com.practica.modelo.SalaReuniones;
@@ -224,5 +225,7 @@ public class GestorReserva {
 	public List<Reserva> listarReservas() throws SQLException {
 		return GestorBBDD.listarReservas();
 	}
+	
+	public static void altaReserva(Scanner scanner) {}
 
 }
