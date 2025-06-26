@@ -44,9 +44,9 @@ public class MenuConsola {
 			System.out.println("******    4. Alta de sala                ******");
 			System.out.println("******    5. Baja de sala                ******");
 			System.out.println("******    6. Modificación de sala        ******");
-			System.out.println("******    7. Alta de reserva             ******");
-			System.out.println("******    8. Baja de reserva             ******");
-			System.out.println("******    9. Modificación de reserva     ******");
+			System.out.println("******    7. Realizar una reserva        ******");
+			System.out.println("******    8. Cancelar reserva            ******");
+			System.out.println("******    9. Modificar una reserva       ******");
 			System.out.println("******    10. Listar empleados           ******");
 			System.out.println("******    11. Listar salas               ******");
 			System.out.println("******    12. Listar reservas            ******");
@@ -244,7 +244,7 @@ public class MenuConsola {
 	    int capacidad = scanner.nextInt();
 	    scanner.nextLine(); // Limpiar el buffer
 
-	    System.out.print("¿Está disponible? (sí/no): ");
+	    System.out.print("¿Está disponible para reservar? (sí/no): ");
 	    String disponibleInput = scanner.nextLine().trim().toLowerCase();
 	    boolean disponible = disponibleInput.equals("sí" ) || disponibleInput.equals("si") || disponibleInput.equals("s");
 
@@ -320,7 +320,7 @@ public class MenuConsola {
 	                salaAModificar.setCapacidad(Integer.parseInt(nuevaCapacidad));
 	            }
 
-	            System.out.print("¿Está disponible? (sí/no) (" + (salaAModificar.isDisponible() ? "sí" : "no") + "): ");
+	            System.out.print("¿Está disponible para reservar? (sí/no) (" + (salaAModificar.isDisponible() ? "sí" : "no") + "): ");
 	            String nuevaDisponibilidad = scanner.nextLine().trim().toLowerCase();
 	            if (!nuevaDisponibilidad.isBlank()) {
 	                salaAModificar.setDisponible(nuevaDisponibilidad.equals("sí") || nuevaDisponibilidad.equals("si") || nuevaDisponibilidad.equals("s"));
@@ -349,38 +349,153 @@ public class MenuConsola {
 	 */
 
 
+/**
+ * Registra una nueva reserva en el sistema.
+ * 
+ * Este método solicita al usuario los datos necesarios para crear una reserva, 
+ * como el DNI del empleado, el ID de la sala, la fecha, la hora de inicio y la hora de fin. 
+ * Luego, crea un objeto de tipo `Reserva` y lo registra en el sistema utilizando 
+ * la clase `GestorReserva`.
+ *
+ * @param scanner Objeto `Scanner` para leer la entrada del usuario.
+ * 
+ * Pasos:
+ * 1. Solicita al usuario el DNI del empleado.
+ * 2. Solicita el ID de la sala.
+ * 3. Solicita la fecha de la reserva en formato `YYYY-MM-DD`.
+ * 4. Solicita la hora de inicio en formato `HH:MM`.
+ * 5. Solicita la hora de fin en formato `HH:MM`.
+ * 6. Crea un objeto `Reserva` con los datos ingresados.
+ * 7. Intenta registrar la reserva en el sistema utilizando `GestorReserva`.
+ * 8. Si el registro es exitoso, muestra el ID generado. Si ocurre un error, 
+ *    muestra un mensaje de error.
+ *
+ * Excepciones:
+ * - Captura cualquier excepción que ocurra durante el registro de la reserva 
+ *   y muestra un mensaje de error al usuario.
+ */
+
 
 
 private void altaReserva(Scanner scanner) {
     System.out.println("Ingrese los datos de la reserva:");
 
-    System.out.print("DNI del empleado: ");
-    String dniEmpleado = scanner.nextLine();
-    
-    System.out.print("ID de la sala: ");
-    int idSala = scanner.nextInt();
+    String dniEmpleado = null;
+    final LocalDate[] fechaReserva = {null};
+    final LocalTime[] horaInicioReserva = {null};
 
-    scanner.nextLine(); // Limpiar el buffer
+    // Validar que el DNI del empleado exista en la base de datos
+    while (dniEmpleado == null) {
+        System.out.print("DNI del empleado: ");
+        String dniIngresado = scanner.nextLine();
+        try {
+            if (GestorEmpleado.existeEmpleado(dniIngresado)) {
+                dniEmpleado = dniIngresado;
+            } else {
+                System.out.println("El DNI ingresado no corresponde a ningún empleado. Por favor, inténtelo de nuevo.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error al verificar el DNI: " + e.getMessage());
+        }
+    }
 
-    System.out.print("Fecha (YYYY-MM-DD): ");
-    String fecha = scanner.nextLine();
+    // Validar entrada de fecha y hora
+    boolean fechaHoraValida = false;
+    while (!fechaHoraValida) {
+        System.out.print("Fecha (YYYY-MM-DD): ");
+        String fecha = scanner.nextLine();
+        System.out.print("Hora de inicio (HH:MM): ");
+        String horaInicio = scanner.nextLine();
+        try {
+            fechaReserva[0] = LocalDate.parse(fecha);
+            horaInicioReserva[0] = LocalTime.parse(horaInicio);
 
-    System.out.print("Hora de inicio (HH:MM): ");
-    String horaInicio = scanner.nextLine();
-
-    System.out.print("Hora de fin (HH:MM): ");
-    String horaFin = scanner.nextLine();
-
-    Reserva reserva = new Reserva(dniEmpleado, idSala, LocalDate.parse(fecha), LocalTime.parse(horaInicio), LocalTime.parse(horaFin));
+            // Validar que la fecha y hora sean futuras
+            if (fechaReserva[0].isBefore(LocalDate.now()) ||
+                (fechaReserva[0].isEqual(LocalDate.now()) && horaInicioReserva[0].isBefore(LocalTime.now()))) {
+                System.out.println("La fecha y hora deben ser posteriores a la actual. Inténtelo de nuevo.");
+            } else {
+                fechaHoraValida = true;
+            }
+        } catch (Exception e) {
+            System.out.println("Formato de fecha u hora incorrecto. Por favor, inténtelo de nuevo.");
+        }
+    }
 
     try {
         GestorReserva gestor = new GestorReserva();
-        int idGenerado = gestor.altaReserva(reserva); // Obtiene el ID generado
+
+        // Verificar si ya existe una reserva para el DNI, fecha y hora
+        if (gestor.existeReserva(dniEmpleado, fechaReserva[0], horaInicioReserva[0])) {
+            System.out.println("Ya existe una reserva para este empleado en la fecha y hora especificadas.");
+            System.out.print("¿Desea cambiar la fecha y hora? (sí/no): ");
+            String opcion = scanner.nextLine().trim().toLowerCase();
+
+            if (opcion.equals("sí") || opcion.equals("si") || opcion.equals("s")) {
+                altaReserva(scanner); // Reiniciar el proceso
+                return;
+            } else {
+                System.out.println("Operación cancelada.");
+                return;
+            }
+        }
+
+        // Solicitar hora de fin y validar
+        final LocalTime[] horaFinReserva = {null};
+        while (horaFinReserva[0] == null) {
+            System.out.print("Hora de fin (HH:MM): ");
+            String horaFin = scanner.nextLine();
+            try {
+                horaFinReserva[0] = LocalTime.parse(horaFin);
+
+                // Validar que la hora de fin sea posterior a la hora de inicio
+                if (horaFinReserva[0].isBefore(horaInicioReserva[0]) || horaFinReserva[0].equals(horaInicioReserva[0])) {
+                    System.out.println("La hora de fin debe ser posterior a la hora de inicio. Inténtelo de nuevo.");
+                    horaFinReserva[0] = null;
+                }
+            } catch (Exception e) {
+                System.out.println("Formato de hora incorrecto. Por favor, inténtelo de nuevo.");
+            }
+        }
+
+        // Mostrar salas libres considerando la hora de fin
+        List<SalaReuniones> salasLibres = gestor.obtenerSalasLibres(fechaReserva[0], horaInicioReserva[0]);
+        salasLibres.removeIf(sala -> {
+            try {
+                return !GestorReserva.verificarDisponibilidadSala(sala.getId(), fechaReserva[0], horaInicioReserva[0], horaFinReserva[0]);
+            } catch (SQLException e) {
+                System.err.println("Error al verificar disponibilidad de la sala: " + e.getMessage());
+                return true; // Excluir la sala en caso de error
+            }
+        });
+
+        if (salasLibres.isEmpty()) {
+            System.out.println("No hay salas disponibles para la fecha y hora especificadas.");
+            return;
+        }
+
+        System.out.println("Salas disponibles:");
+        for (SalaReuniones sala : salasLibres) {
+            System.out.println("ID: " + sala.getId() + ", Nombre: " + sala.getNombre() + ", Capacidad: " + sala.getCapacidad());
+        }
+
+        System.out.print("Seleccione el ID de la sala: ");
+        int idSala = scanner.nextInt();
+        scanner.nextLine(); // Limpiar el buffer
+
+        Reserva reserva = new Reserva(dniEmpleado, idSala, fechaReserva[0], horaInicioReserva[0], horaFinReserva[0]);
+
+        // Registrar la reserva
+        int idGenerado = gestor.altaReserva(reserva);
         System.out.println("Reserva registrada exitosamente con ID: " + idGenerado);
+
     } catch (Exception e) {
         System.err.println("Error al registrar la reserva: " + e.getMessage());
     }
 }
+
+
+
 
 
 	

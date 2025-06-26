@@ -1,10 +1,14 @@
 package com.practica.servicio;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.practica.modelo.Empleado;
+import com.practica.persistencia.ConfiguracionBBDD;
 import com.practica.persistencia.GestorBBDD;
 
 public class GestorEmpleado {
@@ -70,5 +74,44 @@ public class GestorEmpleado {
             System.err.println("Error al listar empleados: " + e.getMessage());
          }
     }
+    
 
+/**
+ * Verifica si un empleado con el DNI especificado existe en la base de datos.
+ *
+ * Este método realiza una consulta a la base de datos para comprobar si 
+ * existe un registro en la tabla `empleados` con el DNI proporcionado.
+ *
+ * @param dni El DNI del empleado que se desea verificar.
+ * @return `true` si el empleado existe en la base de datos, `false` en caso contrario.
+ * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+ *
+ * Ejemplo de uso:
+ * <pre>
+ * boolean existe = GestorEmpleado.existeEmpleado("12345678A");
+ * if (existe) {
+ *     System.out.println("El empleado existe.");
+ * } else {
+ *     System.out.println("El empleado no existe.");
+ * }
+ * </pre>
+ */
+
+
+    public static boolean existeEmpleado(String dni) throws SQLException {
+        String query = "SELECT COUNT(*) FROM empleados WHERE dni = ?";
+        try (Connection connection = ConfiguracionBBDD.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, dni);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0; // Devuelve true si el conteo es mayor a 0
+                }
+            }
+        }
+        return false; // Devuelve false si no se encuentra el empleado
+    }
 }
+    
+    
+
