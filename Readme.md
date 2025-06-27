@@ -10,19 +10,27 @@ src
 │   └── java  
 │       └── com  
 │           └── practica  
+│               └── main  
+│                   └── MenuConsola.java  
 │               └── modelo  
 │                   ├── Empleado.java 
 │					├── SalaReuniones.java
 │					└── Reserva.java
-│ 
-│               └── main  
-│                   └── Run.java  
+│               └── persistencia
+│                   ├── ConfiguracionBBDD.java 
+│					└── GestorBBDD.java
+│               └── servicio 
+│                   ├── GestorEmpleado.java 
+│					├── GestorReserva.java
+│					└── GestorSalaReuniones.java
 └── test  
     └── java  
-        └── com  
-            └── practica  
-                └── modelo  
-                    └── EmpleadoTest.java  
+        ├── EmpleadoTest.java  
+        ├── GestorEmpleadoTest.java
+        ├── GestorReservaTest.java
+        ├── GestorSalaReunionesTest.java
+        ├── ReservaTest.java
+        └── SalaReunionesTest.java
 
 
 
@@ -45,30 +53,68 @@ src
   
 ## Pruebas Unitarias
 
-Las pruebas unitarias son una parte fundamental de este proyecto, asegurando que las funcionalidades principales de las entidades `Sala`, `Empleado` y `Reserva` se comporten como se espera. Se han implementado utilizando **JUnit 5** y **Mockito**.
+El proyecto incluye un conjunto completo de pruebas unitarias diseñadas para garantizar la funcionalidad y estabilidad 
+de las principales características de la aplicación. 
+Estas pruebas se han implementado utilizando JUnit 5 y Mockito, y se centran en las siguientes áreas clave:
 
 ### Cobertura de las Pruebas
 
-1. **Clases Modelo (`Empleado`, `SalaReuniones`, `Reserva`)**:
-   - Validación de constructores.
-   - Pruebas de métodos `getters` y `setters`.
-   - Verificación de los métodos sobrescritos: `equals`, `hashCode` y `toString`.
 
-2. **Gestión de Entidades**:
-   - **Alta de Entidad**: Verifica que las entidades se agregan correctamente a la base de datos.
-   - **Baja de Entidad**: Comprueba que las entidades se eliminan correctamente.
-   - **Modificación de Entidad**: Valida que los cambios en las entidades se actualizan correctamente.
-   - **Listado de Entidades**: Asegura que se recupera la lista completa de entidades desde la base de datos.
+### Gestión de Empleados:
 
-3. **Simulación de Base de Datos**:
-   - Uso de `MockedStatic` para simular métodos estáticos de la clase `GestorBBDD`.
-   - Verificación de llamadas a métodos como `agregarEntidad`, `eliminarEntidad`, `modificarEntidad` y `listarEntidades`.
+ - **Alta de Empleados:** Verifica que los empleados se registren correctamente en la base de datos.
+ - **Modificación de Empleados:** Valida que los datos de los empleados se actualicen correctamente.
+ - **Baja de Empleados:** Comprueba que los empleados se eliminen correctamente, asegurando que no tengan reservas futuras.
+ - **Listado de Empleados:** Asegura que se recupera la lista completa de empleados desde la base de datos.
+
+### Gestión de Reservas:
+
+ - **Creación de Reservas:** Valida que las reservas se registren correctamente, verificando la disponibilidad de las salas.
+ - **Modificación de Reservas:** Comprueba que las reservas se actualicen correctamente, incluyendo la validación de conflictos de horarios.
+ - **Cancelación de Reservas:** Verifica que las reservas se cancelen correctamente.
+ - **Disponibilidad de Salas:** Asegura que las salas estén disponibles en los horarios solicitados.
+
+### Gestión de Salas de Reuniones:
+
+ - **Alta, Baja y Modificación de Salas:** Valida que las salas se gestionen correctamente en la base de datos.
+ - **Listado de Salas Disponibles:** Comprueba que se recuperen las salas disponibles para una fecha y hora específicas.
+
+### Simulación de Base de Datos:
+
+ - **Uso de MockedStatic: Simula métodos estáticos de la clase GestorBBDD.
+ - **Verificación de llamadas: Métodos como listarReservas, altaReserva, bajaReserva, listarSalas, entre otros.
 
 ### Herramientas Utilizadas
 
-- **JUnit 5**: Framework principal para pruebas unitarias.
-- **Mockito**: Simulación de dependencias y métodos estáticos.
-- **JaCoCo**: Para medir la cobertura de las pruebas.
+ - **JUnit 5:** Framework principal para la creación de pruebas unitarias.
+ - **Mockito:** Utilizado para simular dependencias y métodos estáticos.
+ - **JaCoCo:** Herramienta para medir la cobertura de las pruebas.
+
+
+## Instrucciones para Ejecutar los Tests
+
+1. Asegúrate de que las dependencias de pruebas (JUnit 5 y Mockito) estén configuradas en el archivo `pom.xml`.
+2. Para ejecutar los tests desde el IDE:
+   - Navega a la carpeta `test` en el proyecto.
+   - Haz clic derecho en la clase de prueba o en el paquete y selecciona "Run Tests".
+3. Para ejecutar los tests desde la terminal, usa el siguiente comando:
+   ```bash
+   mvn test
+   ```
+4. Los resultados de las pruebas se mostrarán en la consola.
+
+   mvn test
+
+ - **Explicación de las Pruebas:**
+
+
+ - **testExisteReserva:**  Verifica si una reserva existe para un empleado en una fecha y hora específicas.
+ - **testObtenerSalasLibres:** Comprueba que se obtienen las salas disponibles para una fecha y hora.
+ - **testVerificarDisponibilidadSala:** Valida si una sala está disponible en un rango de tiempo.
+ - **testAltaReserva:** Simula el registro de una nueva reserva y verifica el ID generado.
+ - **testCancelacionReserva:** Comprueba que una reserva se cancela correctamente.
+
+Estas pruebas utilizan MockedStatic para simular los métodos estáticos de GestorBBDD. Asegúrate de incluir las dependencias de JUnit 5 y Mockito en tu archivo pom.xml.
 
 
 ## Información de la Base de Datos
@@ -82,6 +128,9 @@ La base de datos utilizada en este proyecto se llama `ReservaSalas`. A continuac
 3. Ejecuta el archivo `Mysql/bd_ReservaSalas.sql` para crear la base de datos con todas las tablas/columnas vacías o `Mysql/bd_ReservaSalas_Full.sql` para crear la base de datos completa con todas las tablas y datos iniciales.
 
 ### Archivos SQL y su Contenido
+
+- **`diagrama_er.jpg`**:  
+  Archivo de imagen que muestra el diagrama ER de la base de datos.
 
 - **`Mysql/bd_ReservaSalas.sql`**:  
   Archivo vacío que puede ser utilizado como plantilla para agregar datos o realizar pruebas personalizadas.
@@ -108,28 +157,17 @@ Todos los archivos SQL se encuentran en la carpeta `Mysql` dentro del proyecto.
    ```bash
    git clone <URL_DEL_REPOSITORIO>
    ```
-2. Importa el proyecto en tu IDE (por ejemplo, IntelliJ IDEA).
+2. Importa el proyecto en tu IDE (por ejemplo, IntelliJ IDEA, ECLIPSE...).
 3. Asegúrate de tener configurado **Java 11** o superior y **Maven**.
 
 ## Instrucciones para Ejecutar la Aplicación
 
 1. Configura la conexión a la base de datos en `ConfiguracionBBDD.java`.
-2. Ejecuta la clase principal `Run.java` desde el IDE o con Maven:
+2. Ejecuta la clase principal `MenuConsola.java` desde el IDE o con Maven:
    ```bash
-   mvn exec:java -Dexec.mainClass="com.practica.main.Run"
+   mvn exec:java -Dexec.mainClass="com.practica.main.MenuConsola"
    ```
 
-## Instrucciones para Ejecutar los Tests
-
-1. Asegúrate de que las dependencias de pruebas (JUnit 5 y Mockito) estén configuradas en el archivo `pom.xml`.
-2. Para ejecutar los tests desde el IDE:
-   - Navega a la carpeta `test` en el proyecto.
-   - Haz clic derecho en la clase de prueba o en el paquete y selecciona "Run Tests".
-3. Para ejecutar los tests desde la terminal, usa el siguiente comando:
-   ```bash
-   mvn test
-   ```
-4. Los resultados de las pruebas se mostrarán en la consola.
 
 ## Metodología de Desarrollo
 
@@ -142,6 +180,7 @@ Este proyecto ha sido desarrollado utilizando la metodología **Scrum**. Toda la
 - **Mockito**
 - **Maven**
 - **MySQL**
+
 ## Autor
 
 Proyecto desarrollado por [Ivan Villa].
