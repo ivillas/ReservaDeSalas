@@ -123,7 +123,9 @@ Estas pruebas utilizan MockedStatic para simular los métodos estáticos de Gest
 
 ## Información de la Base de Datos
 
-La base de datos utilizada en este proyecto se llama `ReservaSalas`. A continuación, se detalla cómo crearla y qué contiene cada archivo SQL.
+	- La base de datos utilizada en este proyecto se llama `ReservaSalas`. 
+	- En la carpeta diagramas hay un archivo de imagen que muestra el diagrama ER de la base de datos llamado **`diagrama_er.jpg`**.
+	- A continuación, se detalla cómo crearla y qué contiene cada archivo SQL.
 
 ### Creación de la Base de Datos
 
@@ -140,9 +142,6 @@ La base de datos utilizada en este proyecto se llama `ReservaSalas`. A continuac
 3. Ejecuta el archivo `Mysql/bd_ReservaSalas.sql` para crear la base de datos con todas las tablas/columnas vacías o `Mysql/bd_ReservaSalas_Full.sql` para crear la base de datos completa con todas las tablas y datos iniciales.
 
 ### Archivos SQL y su Contenido
-
-- **`diagrama_er.jpg`**:  
-  Archivo de imagen que muestra el diagrama ER de la base de datos.
 
 - **`Mysql/bd_ReservaSalas.sql`**:  
   Archivo vacío que puede ser utilizado como plantilla para agregar datos o realizar pruebas personalizadas.
