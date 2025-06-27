@@ -129,6 +129,14 @@ La base de datos utilizada en este proyecto se llama `ReservaSalas`. A continuac
 
 1. Asegúrate de tener un servidor MySQL en ejecución.
 2. Configura la conexión a la base de datos en el archivo `ConfiguracionBBDD.java`.
+
+	- Introduce la direccion ip del servidor de la base de datos en **IP_SERVIDOR**
+	- Introduce la direccion el puerto del servidor de la base de datos en **PORT_BBDD**
+	- Introduce el usuario de la base de datos en **USER_BBDD**
+	- Introduce la contraseña de la base de datos en **PASWORD_BBDD**
+	
+	-**NOTA** también puedes configurar la direccion directa a la base de datos completa en **IP_SERVIDOR_BBDD** 
+
 3. Ejecuta el archivo `Mysql/bd_ReservaSalas.sql` para crear la base de datos con todas las tablas/columnas vacías o `Mysql/bd_ReservaSalas_Full.sql` para crear la base de datos completa con todas las tablas y datos iniciales.
 
 ### Archivos SQL y su Contenido
@@ -202,7 +210,7 @@ Este proyecto ha sido desarrollado utilizando la metodología **Scrum**. Toda la
 ## Autor
 
 - Proyecto desarrollado por [Ivan Villa].
-- Version [V1.1]
+- Version [V1.2]
 
 ## Licencia
 
