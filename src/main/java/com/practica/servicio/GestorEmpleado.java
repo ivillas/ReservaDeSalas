@@ -138,7 +138,7 @@ public class GestorEmpleado {
 	 */
 
 	public static void bajaEmpleado(Scanner scanner) {
-		System.out.println("Ingrese el DNI del empleado a eliminar (formato: 46254789Y):");
+		System.out.println("Ingrese el DNI del empleado a eliminar (formato: 46254789Y) o escriba 'salir' para cancelar.:");
 
 		// Validar el formato del DNI
 		String dni;

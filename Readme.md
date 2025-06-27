@@ -1,10 +1,12 @@
 
 # Proyecto de Gestión de Empleados
 
-Este proyecto es una aplicación básica para la gestión de reservas de salas para reuniones de una empresa con todo el CRUD de empleados, salas y reservas, desarrollada en Java utilizando JUnit 5,Mockito y JaCoCo para las pruebas unitarias.
+Este proyecto es una aplicación básica para la gestión de reservas de salas para reuniones de una 
+empresa con todo el CRUD de empleados, salas y reservas, evitando conflictos de duplicados y cruces 
+de datos. Desarrollada en Java utilizando maven, JUnit 5, Mockito y JaCoCo para las pruebas unitarias.
 
 ## Estructura del Proyecto
-
+```
 src  
 ├── main  
 │   └── java  
@@ -14,25 +16,28 @@ src
 │                   └── MenuConsola.java  
 │               └── modelo  
 │                   ├── Empleado.java 
-│					├── SalaReuniones.java
-│					└── Reserva.java
+│                   ├── SalaReuniones.java
+│                   └── Reserva.java
 │               └── persistencia
 │                   ├── ConfiguracionBBDD.java 
-│					└── GestorBBDD.java
+│                   └── GestorBBDD.java
 │               └── servicio 
 │                   ├── GestorEmpleado.java 
-│					├── GestorReserva.java
-│					└── GestorSalaReuniones.java
-└── test  
-    └── java  
-        ├── EmpleadoTest.java  
-        ├── GestorEmpleadoTest.java
-        ├── GestorReservaTest.java
-        ├── GestorSalaReunionesTest.java
-        ├── ReservaTest.java
-        └── SalaReunionesTest.java
-
-
+│                   ├── GestorReserva.java
+│                   └── GestorSalaReuniones.java
+├─── test  
+│    └── java  
+│        ├── EmpleadoTest.java  
+│        ├── GestorEmpleadoTest.java
+│        ├── GestorReservaTest.java
+│        ├── GestorSalaReunionesTest.java
+│        ├── ReservaTest.java
+│        └── SalaReunionesTest.java
+├── documentacion/
+├── mysql/
+├── pom.xml
+└── README.md
+```
 
 ## Funcionalidades
 
@@ -97,13 +102,12 @@ Estas pruebas se han implementado utilizando JUnit 5 y Mockito, y se centran en 
 2. Para ejecutar los tests desde el IDE:
    - Navega a la carpeta `test` en el proyecto.
    - Haz clic derecho en la clase de prueba o en el paquete y selecciona "Run Tests".
-3. Para ejecutar los tests desde la terminal, usa el siguiente comando:
+3. Para ejecutar los tests desde la terminal, dirigete a la carpeta raiz del proyecto desde la terminal y usa el siguiente comando:
    ```bash
    mvn test
    ```
 4. Los resultados de las pruebas se mostrarán en la consola.
 
-   mvn test
 
  - **Explicación de las Pruebas:**
 

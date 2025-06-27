@@ -44,8 +44,16 @@ public class MenuConsola {
 			System.out.println("******     0. Salir                      ******");
 			System.out.print("\nSeleccione una opción: ");
 
-			opcion = scanner.nextInt();
-			scanner.nextLine();
+		    // Validar entrada
+		    while (true) {
+		        try {
+		            opcion = Integer.parseInt(scanner.nextLine());
+		            break; // Salir del bucle si la entrada es válida
+		        } catch (NumberFormatException e) {
+		            System.out.println("Entrada no válida. Por favor, introduzca un número entero.");
+		            System.out.print("Seleccione una opción: ");
+		        }
+		    }
 
 			switch (opcion) {
 			case 1:
@@ -87,11 +95,20 @@ public class MenuConsola {
 			case 0:
 				System.out.println("Saliendo del sistema...");
 				break;
-			default:
-				System.out.println("Opción no válida. Intente nuevamente.");
+			default: 
+				while (true) { 
+					System.out.println("Opción no válida. Intente nuevamente."); 
+					System.out.print("Seleccione una opción: "); 
+					try { opcion = Integer.parseInt(scanner.nextLine()); 
+					break; 
+					}
+					catch (NumberFormatException e) { 
+						System.out.println("Entrada no válida. Por favor, introduzca un número entero."); 
+						} 
+					} break;
 			}
 		} while (opcion != 0);
-
+		
 		scanner.close();
 	}
 	
