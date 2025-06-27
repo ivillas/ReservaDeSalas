@@ -38,14 +38,14 @@ public class GestorEmpleado {
 		// Validar el formato del DNI
 		String dni;
 		while (true) {
-			System.out.print("DNI (formato: 46254789Y): ");
+			System.out.print("DNI (formato: 46254789Y) o escriba 'salir' para cancelar: ");
 			dni = scanner.nextLine();
 			if (dni.equalsIgnoreCase("salir")) {
 				System.out.println("Operación cancelada.");
 				return;
 			}
 			if (!dni.matches("\\d{8}[A-Z]")) {
-				System.out.println("Formato de DNI incorrecto. Inténtelo de nuevo o escriba 'salir' para cancelar.");
+				System.out.println("Formato de DNI incorrecto. Inténtelo de nuevo o escriba 'salir' para cancelar:");
 				continue;
 			}
 			if (GestorEmpleado.existeEmpleado(dni)) {

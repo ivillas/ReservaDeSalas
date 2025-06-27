@@ -170,7 +170,15 @@ Todos los archivos SQL se encuentran en la carpeta `Mysql` dentro del proyecto.
 
 ## Instrucciones para Ejecutar la Aplicación
 
-1. Configura la conexión a la base de datos en `ConfiguracionBBDD.java`.
+1. Configura la conexión a la base de datos Mysql en `ConfiguracionBBDD.java`.
+
+	- Introduce la direccion ip del servidor de la base de datos en **IP_SERVIDOR**
+	- Introduce la direccion el puerto del servidor de la base de datos en **PORT_BBDD**
+	- Introduce el usuario de la base de datos en **USER_BBDD**
+	- Introduce la contraseña de la base de datos en **PASWORD_BBDD**
+	
+	-**NOTA** también puedes configurar la direccion directa a la base de datos completa en **IP_SERVIDOR_BBDD** 
+
 2. Para ejecutar la aplicación desde el IDE: 
 	- Ejecuta la clase principal `MenuConsola.java`  
 3. Para ejecutar la aplicación desde la terminal, dirigete a la carpeta raiz del proyecto desde la terminal y usa el siguiente comando:
