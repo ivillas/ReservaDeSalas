@@ -46,7 +46,13 @@ public class GestorReserva {
 	 *                registrar la reserva en el sistema utilizando `GestorReserva`.
 	 *                8. Si el registro es exitoso, muestra el ID generado. Si
 	 *                ocurre un error, muestra un mensaje de error.
-	 *
+	 * 
+	 *                Validaciones: - Verifica que el DNI del empleado exista en la
+	 *                base de datos y que su formato sea correcto (8 dígitos
+	 *                seguidos de una letra). - Verifica que la fecha y hora de
+	 *                inicio sean futuras. - Verifica que la hora de fin sea
+	 *                posterior a la hora de inicio. - Verifica que no exista una
+	 *                reserva para el mismo empleado en la misma fecha y hora.
 	 *                Excepciones: - Captura cualquier excepción que ocurra durante
 	 *                el registro de la reserva y muestra un mensaje de error al
 	 *                usuario.
@@ -59,16 +65,30 @@ public class GestorReserva {
 		final LocalDate[] fechaReserva = { null };
 		final LocalTime[] horaInicioReserva = { null };
 
-		// Validar que el DNI del empleado exista en la base de datos
+		// Validar que el DNI del empleado exista en la base de datos y su formato sea
+		// correcto
 		while (dniEmpleado == null) {
-			System.out.print("DNI del empleado: ");
+			System.out.print("DNI del empleado (o escriba 'salir' para cancelar): ");
 			String dniIngresado = scanner.nextLine();
+
+			if (dniIngresado.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
+
+			// Validar formato del DNI (ejemplo: 8 dígitos seguidos de una letra)
+			if (!dniIngresado.matches("\\d{8}[A-Za-z]")) {
+				System.out.println(
+						"El DNI debe tener 8 dígitos seguidos de una letra. Inténtelo de nuevo o escriba 'salir' para cancelar");
+				continue;
+			}
+
 			try {
 				if (GestorEmpleado.existeEmpleado(dniIngresado)) {
 					dniEmpleado = dniIngresado;
 				} else {
 					System.out.println(
-							"El DNI ingresado no corresponde a ningún empleado. Por favor, inténtelo de nuevo.");
+							"El DNI ingresado no corresponde a ningún empleado. Por favor, inténtelo de nuevo o escriba 'salir' para cancelar");
 				}
 			} catch (Exception e) {
 				System.out.println("Error al verificar el DNI: " + e.getMessage());
@@ -78,10 +98,18 @@ public class GestorReserva {
 		// Validar entrada de fecha y hora
 		boolean fechaHoraValida = false;
 		while (!fechaHoraValida) {
-			System.out.print("Fecha (YYYY-MM-DD): ");
+			System.out.print("Fecha (YYYY-MM-DD) o escriba 'salir' para cancelar: ");
 			String fecha = scanner.nextLine();
-			System.out.print("Hora de inicio (HH:MM): ");
+			if (fecha.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
+			System.out.print("Hora de inicio (HH:MM) o escriba 'salir' para cancelar: ");
 			String horaInicio = scanner.nextLine();
+			if (horaInicio.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
 			try {
 				fechaReserva[0] = LocalDate.parse(fecha);
 				horaInicioReserva[0] = LocalTime.parse(horaInicio);
@@ -89,12 +117,14 @@ public class GestorReserva {
 				// Validar que la fecha y hora sean futuras
 				if (fechaReserva[0].isBefore(LocalDate.now()) || (fechaReserva[0].isEqual(LocalDate.now())
 						&& horaInicioReserva[0].isBefore(LocalTime.now()))) {
-					System.out.println("La fecha y hora deben ser posteriores a la actual. Inténtelo de nuevo.");
+					System.out.println(
+							"La fecha y hora deben ser posteriores a la actual. Inténtelo de nuevo o escriba 'salir' para cancelar");
 				} else {
 					fechaHoraValida = true;
 				}
 			} catch (Exception e) {
-				System.out.println("Formato de fecha u hora incorrecto. Por favor, inténtelo de nuevo.");
+				System.out.println(
+						"Formato de fecha u hora incorrecto. Por favor, inténtelo de nuevo o escriba 'salir' para cancelar");
 			}
 		}
 
@@ -104,9 +134,12 @@ public class GestorReserva {
 			// Verificar si ya existe una reserva para el DNI, fecha y hora
 			if (gestor.existeReserva(dniEmpleado, fechaReserva[0], horaInicioReserva[0])) {
 				System.out.println("Ya existe una reserva para este empleado en la fecha y hora especificadas.");
-				System.out.print("¿Desea cambiar la fecha y hora? (sí/no): ");
+				System.out.print("¿Desea cambiar la fecha y hora? (sí/no)  o escriba 'salir' para cancelar: ");
 				String opcion = scanner.nextLine().trim().toLowerCase();
-
+				if (opcion.equalsIgnoreCase("salir")) {
+					System.out.println("Operación cancelada.");
+					return;
+				}
 				if (opcion.equals("sí") || opcion.equals("si") || opcion.equals("s")) {
 					altaReserva(scanner); // Reiniciar el proceso
 					return;
@@ -121,18 +154,23 @@ public class GestorReserva {
 			while (horaFinReserva[0] == null) {
 				System.out.print("Hora de fin (HH:MM): ");
 				String horaFin = scanner.nextLine();
+				if (horaFin.equalsIgnoreCase("salir")) {
+					System.out.println("Operación cancelada.");
+					return;
+				}
 				try {
 					horaFinReserva[0] = LocalTime.parse(horaFin);
 
 					// Validar que la hora de fin sea posterior a la hora de inicio
 					if (horaFinReserva[0].isBefore(horaInicioReserva[0])
 							|| horaFinReserva[0].equals(horaInicioReserva[0])) {
-						System.out
-								.println("La hora de fin debe ser posterior a la hora de inicio. Inténtelo de nuevo.");
+						System.out.println(
+								"La hora de fin debe ser posterior a la hora de inicio. Inténtelo de nuevo o escriba 'salir' para cancelar: ");
 						horaFinReserva[0] = null;
 					}
 				} catch (Exception e) {
-					System.out.println("Formato de hora incorrecto. Por favor, inténtelo de nuevo.");
+					System.out.println(
+							"Formato de hora incorrecto. Por favor, inténtelo de nuevo o escriba 'salir' para cancelar: ");
 				}
 			}
 
@@ -159,20 +197,58 @@ public class GestorReserva {
 						+ sala.getCapacidad());
 			}
 
-			System.out.print("Seleccione el ID de la sala: ");
-			int idSala = scanner.nextInt();
-			scanner.nextLine(); // Limpiar el buffer
+			System.out.print("Seleccione el ID de la sala o escriba 'salir' para cancelar: ");
+			String input = scanner.nextLine().trim();
+
+			if (input.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
+
+			int idSala;
+			while (true) {
+				try {
+					idSala = Integer.parseInt(input); // Convertir a entero si no es "salir"
+
+					// Validar si el ID existe en la base de datos
+					if (!GestorBBDD.existeSalaPorId(idSala)) {
+						System.out.println(
+								"El ID ingresado no corresponde a ninguna sala existente. Inténtelo de nuevo.");
+						System.out.print("Seleccione el ID de la sala o escriba 'salir' para cancelar: ");
+						input = scanner.nextLine().trim(); // Leer nueva entrada
+						if (input.equalsIgnoreCase("salir")) {
+							System.out.println("Operación cancelada.");
+							return;
+						}
+						continue; // Volver al inicio del bucle
+					}
+
+					break; // Salir del bucle si el ID es válido
+				} catch (NumberFormatException e) {
+					if (input.equalsIgnoreCase("salir")) {
+						System.out.println("Operación cancelada.");
+						return;
+					}
+					System.out.println("Entrada inválida. Debe ser un número entero o 'salir'.");
+					System.out.print("Seleccione el ID de la sala o escriba 'salir' para cancelar: ");
+					input = scanner.nextLine().trim(); // Leer nueva entrada
+				} catch (SQLException e) {
+					System.err.println("Error al comprobar el ID en la base de datos: " + e.getMessage());
+					return;
+				}
+			}
 
 			Reserva reserva = new Reserva(dniEmpleado, idSala, fechaReserva[0], horaInicioReserva[0],
 					horaFinReserva[0]);
 
 			// Registrar la reserva
 			int idGenerado = GestorBBDD.altaReserva(reserva);
-			System.out.println("Reserva registrada exitosamente con ID: " + idGenerado);
+			System.out.println("Reserva registrada exitosamente con ID: " + idGenerado + " pulsa enter.");
 
 		} catch (Exception e) {
-			System.err.println("Error al registrar la reserva: " + e.getMessage());
+			System.err.println("Error al registrar la reserva: pulsa enter." + e.getMessage());
 		}
+		scanner.nextLine();
 	}
 
 	/**
@@ -328,22 +404,69 @@ public class GestorReserva {
 	 *
 	 * Este método solicita al usuario el ID de la reserva que desea cancelar,
 	 * verifica si la operación fue exitosa y muestra un mensaje adecuado. Si el ID
-	 * no existe, informa al usuario que no se encontró la reserva.
+	 * no existe, informa al usuario que no se encontró la reserva. realiza las
+	 * verificaciones necesarias para asegurar que el ID de la reserva sea válido y
+	 * que la reserva exista en el sistema. * @throws NumberFormatException Si el ID
+	 * ingresado no es un número entero.
 	 *
 	 * @param scanner Objeto `Scanner` para leer la entrada del usuario.
 	 */
 
 	public static void cancelacionReserva(Scanner scanner) {
-		System.out.print("Ingrese el ID de la reserva a cancelar: ");
-		int idReserva = scanner.nextInt();
-		scanner.nextLine(); // Limpiar el buffer
+		System.out.print("Ingrese el ID de la reserva a cancelar (máximo 11 caracteres) o  'salir' para cancelar: ");
+		String input = scanner.nextLine().trim();
+		if (input.equalsIgnoreCase("salir")) {
+			System.out.println("Operación cancelada.");
+			return;
+		}
+
+		// Validar que el ID tenga un máximo de 11 caracteres
+		if (input.length() > 11) {
+			System.out.println("El ID no puede tener más de 11 caracteres.");
+			cancelacionReserva(scanner);
+		}
+
+		int idReserva;
+		try {
+			idReserva = Integer.parseInt(input); // Convertir a entero
+		} catch (NumberFormatException e) {
+			System.out.println("El ID debe ser un número entero.");
+			cancelacionReserva(scanner);
+			return;
+		}
 
 		try {
-			boolean exito = GestorBBDD.bajaReserva(idReserva); // Verificar si se eliminó la reserva
+			// Verificar si la reserva existe
+			Reserva reserva = GestorBBDD.obtenerReservaPorId(idReserva);
+			if (reserva == null) {
+				System.out.println("No se encontró una reserva con el ID especificado.");
+				cancelacionReserva(scanner);
+				return;
+			}
+
+			// Mostrar los datos de la reserva
+			System.out.println("Datos de la reserva:");
+			System.out.println("ID: " + reserva.getIdReserva());
+			System.out.println("DNI Empleado: " + reserva.getDniEmpleado());
+			System.out.println("ID Sala: " + reserva.getIdSala());
+			System.out.println("Fecha: " + reserva.getFecha());
+			System.out.println("Hora Inicio: " + reserva.getHoraInicio());
+			System.out.println("Hora Fin: " + reserva.getHoraFin());
+
+			// Confirmar eliminación
+			System.out.print("¿Está seguro de que desea cancelar esta reserva? (sí/no): ");
+			String confirmacion = scanner.nextLine().trim().toLowerCase();
+			if (!confirmacion.equals("sí") && !confirmacion.equals("si") || !confirmacion.equals("s")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
+
+			// Eliminar la reserva
+			boolean exito = GestorBBDD.bajaReserva(idReserva);
 			if (exito) {
 				System.out.println("Reserva cancelada exitosamente.");
 			} else {
-				System.out.println("No se encontró una reserva con el ID especificado.");
+				System.out.println("No se pudo cancelar la reserva. Inténtelo de nuevo.");
 			}
 		} catch (Exception e) {
 			System.err.println("Error al cancelar la reserva: " + e.getMessage());
@@ -380,6 +503,13 @@ public class GestorReserva {
 	 *                debe ser anterior a la hora de fin. - La hora de fin debe ser
 	 *                posterior a la hora de inicio.
 	 *
+	 *                verificar si ya existe una reserva para el DNI, fecha y hora
+	 *                especificadas antes de modificar la reserva.
+	 * 
+	 *                Si ya existe una reserva, se le pregunta al usuario si desea
+	 *                cambiar la fecha y hora. Si acepta, se reinicia el proceso de
+	 *                alta de reserva.
+	 * 
 	 *                Excepciones manejadas: - `NumberFormatException`: Si el ID
 	 *                ingresado no es un número entero. - `DateTimeParseException`:
 	 *                Si la fecha u hora ingresada no tienen el formato correcto. -
@@ -393,8 +523,12 @@ public class GestorReserva {
 
 		// Validar que el ID de la reserva sea un entero y que exista
 		while (true) {
-			System.out.print("Ingrese el ID de la reserva a modificar: ");
+			System.out.print("Ingrese el ID de la reserva a modificar o escriba 'salir' para cancelar: ");
 			String input = scanner.nextLine();
+			if (input.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
 			try {
 				idReserva = Integer.parseInt(input);
 				if (idReserva > 0) { // Asegurarse de que sea un ID válido (positivo)
@@ -426,8 +560,13 @@ public class GestorReserva {
 
 		// Validar y solicitar nueva fecha
 		while (true) {
-			System.out.print("Nueva fecha (YYYY-MM-DD, deje en blanco para mantener el valor actual): ");
+			System.out.print(
+					"Nueva fecha (YYYY-MM-DD, deje en blanco para mantener el valor actual) o escriba 'salir' para cancelar:  ");
 			String nuevaFecha = scanner.nextLine();
+			if (nuevaFecha.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
 			if (nuevaFecha.isBlank())
 				break;
 
@@ -448,8 +587,13 @@ public class GestorReserva {
 		while (true) {
 			if (horaFinOk)
 				break;
-			System.out.print("Nueva hora de inicio (HH:MM, deje en blanco para mantener el valor actual): ");
+			System.out.print(
+					"Nueva hora de inicio (HH:MM, deje en blanco para mantener el valor actual) o escriba 'salir' para cancelar:  ");
 			String nuevaHoraInicio = scanner.nextLine();
+			if (nuevaHoraInicio.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
 			if (nuevaHoraInicio.isBlank())
 				break;
 
@@ -467,7 +611,7 @@ public class GestorReserva {
 				if (horaInicio.isAfter(reserva.getHoraFin()) || horaInicio.equals(reserva.getHoraFin())) {
 					System.out
 							.println("La nueva hora de inicio no puede ser posterior o igual a la hora de fin actual.");
-					System.out.print("Ingrese una nueva hora de fin (HH:MM): ");
+					System.out.print("Ingrese una nueva hora de fin (HH:MM) o escriba 'salir' para cancelar:  ");
 					while (true) {
 						String nuevaHoraFin = scanner.nextLine();
 						try {
@@ -497,8 +641,13 @@ public class GestorReserva {
 		while (true) {
 			if (horaFinOk)
 				break;
-			System.out.print("Nueva hora de fin (HH:MM, deje en blanco para mantener el valor actual): ");
+			System.out.print(
+					"Nueva hora de fin (HH:MM, deje en blanco para mantener el valor actual) o escriba 'salir' para cancelar:  ");
 			String nuevaHoraFin = scanner.nextLine();
+			if (nuevaHoraFin.equalsIgnoreCase("salir")) {
+				System.out.println("Operación cancelada.");
+				return;
+			}
 			if (nuevaHoraFin.isBlank())
 				break;
 			try {
@@ -514,6 +663,30 @@ public class GestorReserva {
 			}
 		}
 
+		try {
+			GestorReserva gestor = new GestorReserva();
+
+			// Verificar si ya existe una reserva para el DNI, fecha y hora
+			if (gestor.existeReserva(reserva.getDniEmpleado(), reserva.getFecha(), reserva.getHoraInicio())) {
+				System.out.println("Ya existe una reserva para este empleado en la fecha y hora especificadas.");
+				System.out.print("¿Desea cambiar la fecha y hora? (sí/no)  o escriba 'salir' para cancelar: ");
+				String opcion = scanner.nextLine().trim().toLowerCase();
+				if (opcion.equalsIgnoreCase("salir")) {
+					System.out.println("Operación cancelada.");
+					return;
+				}
+				if (opcion.equals("sí") || opcion.equals("si") || opcion.equals("s")) {
+					altaReserva(scanner); // Reiniciar el proceso
+					return;
+				} else {
+					System.out.println("Operación cancelada.");
+					return;
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Error al verificar la reserva existente: " + e.getMessage());
+			return;
+		}
 		try {
 			GestorBBDD.modificarReserva(reserva); // Actualizar la reserva
 			System.out.println("Reserva modificada exitosamente.");
@@ -533,6 +706,7 @@ public class GestorReserva {
 	 *         encuentra.
 	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
 	 */
+
 	public Reserva obtenerReservaPorId(int idReserva) throws SQLException {
 		return GestorBBDD.obtenerReservaPorId(idReserva); // Llama al método de la capa de persistencia
 	}
@@ -550,6 +724,7 @@ public class GestorReserva {
 	 * Este método obtiene las reservas desde el gestor y las muestra en la consola.
 	 * Si no hay reservas registradas, informa al usuario.
 	 */
+
 	public static void listarReservas() {
 		try {
 			List<Reserva> reservas = GestorBBDD.listarReservas();

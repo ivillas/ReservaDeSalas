@@ -1,7 +1,7 @@
 
 # Proyecto de Gestión de Empleados
 
-Este proyecto es una aplicación básica para la gestión de empleados, desarrollada en Java utilizando JUnit 5 para las pruebas unitarias.
+Este proyecto es una aplicación básica para la gestión de reservas de salas para reuniones de una empresa con todo el CRUD de empleados, salas y reservas, desarrollada en Java utilizando JUnit 5,Mockito y JaCoCo para las pruebas unitarias.
 
 ## Estructura del Proyecto
 
@@ -11,7 +11,10 @@ src
 │       └── com  
 │           └── practica  
 │               └── modelo  
-│                   └── Empleado.java  
+│                   ├── Empleado.java 
+│					├── SalaReuniones.java
+│					└── Reserva.java
+│ 
 │               └── main  
 │                   └── Run.java  
 └── test  
@@ -21,22 +24,24 @@ src
                 └── modelo  
                     └── EmpleadoTest.java  
 
+
+
 ## Funcionalidades
 
-- **Clases `Empleado`, `Sala` y `Reserva`**:
-  - Constructor vacío y con parámetros.
-  - Métodos `getters` y `setters`.
-  - Métodos sobrescritos: `equals`, `hashCode`, y `toString`.
+1. **Gestión de Empleados**:
+   - Alta, baja y modificación de empleados.
+   - Validación del formato del DNI.
+   - Listado de empleados.
 
-- **Pruebas unitarias**:
-  - Validación de constructores.
-  - Pruebas de métodos `getters` y `setters`.
-  - Verificación de `equals`, `hashCode`, y `toString`.
-  - **Pruebas de simulación de base de datos**:
-  - Uso de `MockedStatic` para simular métodos estáticos de la clase `GestorBBDD`.
-  - Verificación de llamadas a métodos estáticos como `agregarSala`, `eliminarSala`, `modificarSala` y `listarSalas`.
-  - Validación de que los métodos simulados interactúan correctamente con la lógica de negocio.
-  
+2. **Gestión de Salas de Reuniones**:
+   - Alta, baja y modificación de salas.
+   - Listado de salas disponibles.
+   - Gestión de recursos asociados a las salas.
+
+3. **Gestión de Reservas**:
+   - Creación, modificación y cancelación de reservas.
+   - Verificación de disponibilidad de salas.
+   - Listado de reservas existentes.
   
 ## Pruebas Unitarias
 
@@ -44,53 +49,26 @@ Las pruebas unitarias son una parte fundamental de este proyecto, asegurando que
 
 ### Cobertura de las Pruebas
 
-1. **Clases Modelo (`Sala`, `Empleado`, `Reserva`)**:
-
+1. **Clases Modelo (`Empleado`, `SalaReuniones`, `Reserva`)**:
    - Validación de constructores.
    - Pruebas de métodos `getters` y `setters`.
    - Verificación de los métodos sobrescritos: `equals`, `hashCode` y `toString`.
 
 2. **Gestión de Entidades**:
-   - **Alta de Entidad**: Verifica que una entidad (`Sala`, `Empleado` o `Reserva`) se agrega correctamente a la base de datos.
-   - **Baja de Entidad**: Comprueba que una entidad se elimina correctamente.
-   - **Modificación de Entidad**: Valida que los cambios en una entidad se actualizan correctamente.
+   - **Alta de Entidad**: Verifica que las entidades se agregan correctamente a la base de datos.
+   - **Baja de Entidad**: Comprueba que las entidades se eliminan correctamente.
+   - **Modificación de Entidad**: Valida que los cambios en las entidades se actualizan correctamente.
    - **Listado de Entidades**: Asegura que se recupera la lista completa de entidades desde la base de datos.
 
 3. **Simulación de Base de Datos**:
    - Uso de `MockedStatic` para simular métodos estáticos de la clase `GestorBBDD`.
-   - Verificación de llamadas a métodos estáticos como `agregarEntidad`, `eliminarEntidad`, `modificarEntidad` y `listarEntidades`.
-   - Validación de que los métodos simulados interactúan correctamente con la lógica de negocio.
+   - Verificación de llamadas a métodos como `agregarEntidad`, `eliminarEntidad`, `modificarEntidad` y `listarEntidades`.
 
 ### Herramientas Utilizadas
 
-- **JUnit 5**: Framework principal para la creación y ejecución de pruebas unitarias.
-- **Mockito**: Utilizado para la simulación de dependencias y métodos estáticos.
-- **AssertJ**: Para realizar aserciones más legibles y expresivas (si está configurado).
-
-### Ejemplo de Prueba Generalizada
-
-A continuación, un ejemplo de prueba para el método `bajaSala`:
-
-@Test void testBajaSala() { int idSala = 1;
-
-try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-    mockedBBDD.when(() -> GestorBBDD.eliminarSala(idSala)).thenAnswer(invocation -> null);
-
-    gestorSalaReuniones.bajaSala(idSala);
-
-    mockedBBDD.verify(() -> GestorBBDD.eliminarSala(idSala), times(1));
-}
-}
-
-
-
-Este ejemplo muestra cómo se utiliza `MockedStatic` para simular un método estático y verificar que se llama con los parámetros correctos.
-
-### Cobertura de Código
-
-Se recomienda utilizar herramientas como **JaCoCo** para medir la cobertura de las pruebas y garantizar que todas las funcionalidades críticas estén cubiertas.
-
-
+- **JUnit 5**: Framework principal para pruebas unitarias.
+- **Mockito**: Simulación de dependencias y métodos estáticos.
+- **JaCoCo**: Para medir la cobertura de las pruebas.
 
 
 ## Información de la Base de Datos
@@ -124,13 +102,19 @@ La base de datos utilizada en este proyecto se llama `ReservaSalas`. A continuac
 
 Todos los archivos SQL se encuentran en la carpeta `Mysql` dentro del proyecto.
 
+## Instrucciones para Descargar el Proyecto
+
+1. Clona el repositorio:
+   ```bash
+   git clone <URL_DEL_REPOSITORIO>
+   ```
+2. Importa el proyecto en tu IDE (por ejemplo, IntelliJ IDEA).
+3. Asegúrate de tener configurado **Java 11** o superior y **Maven**.
+
 ## Instrucciones para Ejecutar la Aplicación
 
-1. Asegúrate de tener configurado un entorno de desarrollo con **Java 11** o superior y **Maven**.
-2. Clona este repositorio en tu máquina local.
-3. Configura la conexión a la base de datos en el archivo `ConfiguracionBBDD.java`.
-4. Abre el proyecto en tu IDE (por ejemplo, IntelliJ IDEA).
-5. Ejecuta la clase principal del proyecto `Run.java` desde el IDE o con el siguiente comando en la terminal:
+1. Configura la conexión a la base de datos en `ConfiguracionBBDD.java`.
+2. Ejecuta la clase principal `Run.java` desde el IDE o con Maven:
    ```bash
    mvn exec:java -Dexec.mainClass="com.practica.main.Run"
    ```
@@ -155,9 +139,9 @@ Este proyecto ha sido desarrollado utilizando la metodología **Scrum**. Toda la
 
 - **Java**
 - **JUnit 5**
+- **Mockito**
 - **Maven**
 - **MySQL**
-
 ## Autor
 
 Proyecto desarrollado por [Ivan Villa].

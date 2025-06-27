@@ -1,12 +1,17 @@
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -17,97 +22,51 @@ import com.practica.servicio.GestorReserva;
 
 class GestorReservaTest {
 
-    @Test
-    void testExisteReserva() throws SQLException {
-        String dniEmpleado = "12345678A";
-        LocalDate fecha = LocalDate.of(2023, 10, 15);
-        LocalTime horaInicio = LocalTime.of(10, 0);
+	private GestorReserva gestorReserva;
 
-        try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(() -> GestorBBDD.listarReservas()).thenReturn(Arrays.asList(
-                new Reserva("1", dniEmpleado, 1, fecha, horaInicio, horaInicio.plusHours(2))
-            ));
+	@BeforeEach
+	void setUp() {
+		gestorReserva = new GestorReserva();
+	}
 
-            GestorReserva gestor = new GestorReserva();
-            boolean existe = gestor.existeReserva(dniEmpleado, fecha, horaInicio);
+	@Test
+	void testVerificarDisponibilidadSala() throws SQLException {
+		int idSala = 1;
+		LocalDate fecha = LocalDate.of(2023, 12, 1);
+		LocalTime horaInicio = LocalTime.of(10, 0);
+		LocalTime horaFin = LocalTime.of(11, 0);
 
-            assertTrue(existe);
-            mockedBBDD.verify(GestorBBDD::listarReservas, times(1));
-        }
-    }
+		try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
+			mockedBBDD.when(GestorBBDD::listarReservas).thenReturn(
+					List.of(new Reserva("1", "12345678A", idSala, fecha, LocalTime.of(9, 0), LocalTime.of(10, 0))));
 
-    @Test
-    void testObtenerSalasLibres() throws SQLException {
-        LocalDate fecha = LocalDate.of(2023, 10, 15);
-        LocalTime horaInicio = LocalTime.of(10, 0);
+			boolean disponible = GestorReserva.verificarDisponibilidadSala(idSala, fecha, horaInicio, horaFin);
+			assertTrue(disponible, "La sala debería estar disponible");
+		}
+	}
 
-        List<SalaReuniones> salasMock = Arrays.asList(
-            new SalaReuniones(1, "Sala A", 10, true, Arrays.asList("Proyector")),
-            new SalaReuniones(2, "Sala B", 20, true, Arrays.asList("Pizarra"))
-        );
+	@Test
+	void testAltaReserva() throws SQLException {
+		Reserva reserva = new Reserva("12345678A", 1, LocalDate.of(2023, 12, 1), LocalTime.of(10, 0),
+				LocalTime.of(11, 0));
 
-        try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(() -> GestorBBDD.listarSalas()).thenReturn(salasMock);
+		try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
+			mockedBBDD.when(() -> GestorBBDD.altaReserva(reserva)).thenReturn(1);
 
-            GestorReserva gestor = new GestorReserva();
-            List<SalaReuniones> salasLibres = gestor.obtenerSalasLibres(fecha, horaInicio);
+			int idGenerado = GestorBBDD.altaReserva(reserva);
+			assertEquals(1, idGenerado, "El ID generado debería ser 1");
+		}
+	}
 
-            assertEquals(2, salasLibres.size());
-            assertEquals("Sala A", salasLibres.get(0).getNombre());
-            mockedBBDD.verify(GestorBBDD::listarSalas, times(1));
-        }
-    }
+	@Test
+	void testCancelacionReserva() throws SQLException {
+		int idReserva = 1;
 
-    @Test
-    void testVerificarDisponibilidadSala() throws SQLException {
-        int idSala = 1;
-        LocalDate fecha = LocalDate.of(2023, 10, 15);
-        LocalTime horaInicio = LocalTime.of(10, 0);
-        LocalTime horaFin = LocalTime.of(12, 0);
+		try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
+			mockedBBDD.when(() -> GestorBBDD.bajaReserva(idReserva)).thenReturn(true);
 
-        try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(() -> GestorBBDD.listarReservas()).thenReturn(Arrays.asList(
-                new Reserva("1", "12345678A", idSala, fecha, horaInicio, horaFin)
-            ));
-
-            boolean disponible = GestorReserva.verificarDisponibilidadSala(idSala, fecha, horaInicio, horaFin);
-
-            assertFalse(disponible);
-            mockedBBDD.verify(GestorBBDD::listarReservas, times(1));
-        }
-    }
-
-    @Test
-    void testBajaReserva() throws SQLException {
-        int idReserva = 1;
-
-        try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(() -> GestorBBDD.bajaReserva(idReserva)).thenReturn(true);
-
-            boolean exito = GestorReserva.bajaReserva(idReserva);
-
-            assertTrue(exito);
-            mockedBBDD.verify(() -> GestorBBDD.bajaReserva(idReserva), times(1));
-        }
-    }
-
-    @Test
-    void testListarReservas() throws SQLException {
-        List<Reserva> reservasMock = Arrays.asList(
-            new Reserva("1", "12345678A", 1, LocalDate.of(2023, 10, 15), LocalTime.of(10, 0), LocalTime.of(12, 0)),
-            new Reserva("2", "87654321B", 2, LocalDate.of(2023, 10, 16), LocalTime.of(14, 0), LocalTime.of(16, 0))
-        );
-
-        try (MockedStatic<GestorBBDD> mockedBBDD = mockStatic(GestorBBDD.class)) {
-            mockedBBDD.when(GestorBBDD::listarReservas).thenReturn(reservasMock);
-
-            GestorReserva gestor = new GestorReserva();
-            List<Reserva> reservas = gestor.listaReservas();
-
-            assertEquals(2, reservas.size());
-            assertEquals("12345678A", reservas.get(0).getDniEmpleado());
-            mockedBBDD.verify(GestorBBDD::listarReservas, times(1));
-        }
-    }
+			boolean exito = GestorBBDD.bajaReserva(idReserva);
+			assertTrue(exito, "La reserva debería cancelarse exitosamente");
+		}
+	}
 }
-

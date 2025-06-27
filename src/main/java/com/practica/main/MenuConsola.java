@@ -94,9 +94,16 @@ public class MenuConsola {
 
 		scanner.close();
 	}
-
-
-
-
+	
+	public static void main(String[] args) {
+	    MenuConsola menu = new MenuConsola();
+	    try {
+	        menu.mostrarMenu();
+	    } catch (SQLException e) {
+	        System.err.println("Ocurrió un error al interactuar con la base de datos: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
 
 }
+

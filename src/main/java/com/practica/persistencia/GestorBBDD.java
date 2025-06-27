@@ -206,6 +206,28 @@ public class GestorBBDD {
 		}
 		return salas;
 	}
+	
+	/**
+	 * Comprueba si existe una sala de reuniones con el nombre especificado en la base de datos.
+	 *
+	 * @param nombre El nombre de la sala a comprobar.
+	 * @return `true` si existe una sala con el nombre especificado, `false` en caso contrario.
+	 * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+	 */
+	public static boolean existeSalaPorNombre(String nombre) throws SQLException {
+	    String sql = "SELECT COUNT(*) FROM SalaReuniones WHERE nombre = ?";
+	    try (Connection conn = ConfiguracionBBDD.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, nombre);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt(1) > 0; // Devuelve true si el conteo es mayor a 0
+	            }
+	        }
+	    }
+	    return false; // Devuelve false si no se encuentra la sala
+	}
+	
 
 	// Métodos para Reserva
 
@@ -333,5 +355,29 @@ public class GestorBBDD {
 		}
 		return reservas;
 	}
+	
+	/**
+	 * 	Comprueba si existe una sala de reuniones con el ID especificado en la base de datos. 
+	 *	@param idSala El ID de la sala a comprobar.
+	 * @return true si existe una sala con el ID especificado, false en caso contrario.
+	 *@throws SQLException Si ocurre un error al ejecutar la consulta SQL. 
+	 */ 
+	public static boolean existeSalaPorId(int idSala) throws SQLException { 
+		String sql = "SELECT COUNT(*) FROM SalaReuniones WHERE id = ?"; 
+		try (Connection conn = ConfiguracionBBDD.getConnection(); 
+			PreparedStatement stmt = conn.prepareStatement(sql)) { 
+			stmt.setInt(1, idSala); 
+			try (ResultSet rs = stmt.executeQuery()) { 
+				if (rs.next()) { 
+					return rs.getInt(1) > 0; // Devuelve true si el conteo es mayor a 0 
+					} 
+				} 
+			} return false; // Devuelve false si no se encuentra la sala }
+				}
+			
+		
+	
+	
+	
    
 }
