@@ -86,8 +86,8 @@ Estas pruebas se han implementado utilizando JUnit 5 y Mockito, y se centran en 
 
 ### Simulación de Base de Datos:
 
- - **Uso de MockedStatic: Simula métodos estáticos de la clase GestorBBDD.
- - **Verificación de llamadas: Métodos como listarReservas, altaReserva, bajaReserva, listarSalas, entre otros.
+ - **Uso de MockedStatic:**  Simula métodos estáticos de la clase GestorBBDD.
+ - **Verificación de llamadas:**  Métodos como listarReservas, altaReserva, bajaReserva, listarSalas, entre otros.
 
 ### Herramientas Utilizadas
 
@@ -159,17 +159,23 @@ Todos los archivos SQL se encuentran en la carpeta `Mysql` dentro del proyecto.
 
 1. Clona el repositorio:
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
+   git clone <https://github.com/ivillas/ReservaDeSalas.git>
    ```
-2. Importa el proyecto en tu IDE (por ejemplo, IntelliJ IDEA, ECLIPSE...).
+2. Importa el proyecto en tu IDE (por ejemplo, IntelliJ IDEA, ECLIPSE...) desde la siguiente dirección.
+   ```bash
+   https://github.com/ivillas/ReservaDeSalas.git
+   ```
+
 3. Asegúrate de tener configurado **Java 11** o superior y **Maven**.
 
 ## Instrucciones para Ejecutar la Aplicación
 
 1. Configura la conexión a la base de datos en `ConfiguracionBBDD.java`.
-2. Ejecuta la clase principal `MenuConsola.java` desde el IDE o con Maven:
+2. Para ejecutar la aplicación desde el IDE: 
+	- Ejecuta la clase principal `MenuConsola.java`  
+3. Para ejecutar la aplicación desde la terminal, dirigete a la carpeta raiz del proyecto desde la terminal y usa el siguiente comando:
    ```bash
-   mvn exec:java -Dexec.mainClass="com.practica.main.MenuConsola"
+   mvn exec:java
    ```
 
 
@@ -187,7 +193,8 @@ Este proyecto ha sido desarrollado utilizando la metodología **Scrum**. Toda la
 
 ## Autor
 
-Proyecto desarrollado por [Ivan Villa].
+- Proyecto desarrollado por [Ivan Villa].
+- Version [V1.1]
 
 ## Licencia
 
